@@ -4,7 +4,7 @@ Plugin Name: HT Feature blogposts
 Plugin URI: https://help.govintra.net
 Description: Display blogposts
 Author: Luke Oatham
-Version: 1.4.4
+Version: 1.5.3
 Author URI: https://www.agentodigital.com
 
 */
@@ -23,11 +23,57 @@ class htFeatureBlogposts extends WP_Widget {
 
 			acf_add_local_field_group(array (
 				'key' => 'group_562a555eac132',
-				'title' => 'Feature blog widget',
+				'title' => __('Feature blog widget','govintranet'),
 				'fields' => array (
+					array(
+						'key' => 'field_5aac4cad2be0f',
+						'label' => __('Show thumbnails','govintranet'),
+						'name' => 'thumbnails',
+						'type' => 'true_false',
+						'instructions' => __('Displays the featured image if present, otherwise the author avatar.','govintranet'),
+						'required' => 0,
+						'conditional_logic' => 0,
+						'wrapper' => array(
+							'width' => '',
+							'class' => '',
+							'id' => '',
+						),
+						'message' => '',
+						'default_value' => 0,
+						'ui' => 1,
+						'ui_on_text' => '',
+						'ui_off_text' => '',
+					),
+					array(
+						'key' => 'field_5aac4cbd2be10',
+						'label' => __('Force author avatar','govintranet'),
+						'name' => 'force_author_avatar',
+						'type' => 'true_false',
+						'instructions' => '',
+						'required' => 0,
+						'conditional_logic' => array(
+							array(
+								array(
+									'field' => 'field_5aac4cad2be0f',
+									'operator' => '==',
+									'value' => '1',
+								),
+							),
+						),
+						'wrapper' => array(
+							'width' => '',
+							'class' => '',
+							'id' => '',
+						),
+						'message' => '',
+						'default_value' => 0,
+						'ui' => 1,
+						'ui_on_text' => '',
+						'ui_off_text' => '',
+					),
 					array (
 						'key' => 'field_562a555eb8501',
-						'label' => 'Pin posts',
+						'label' => __('Pin posts','govintranet'),
 						'name' => 'pin_posts',
 						'type' => 'relationship',
 						'instructions' => '',
@@ -56,7 +102,7 @@ class htFeatureBlogposts extends WP_Widget {
 					),
 					array (
 						'key' => 'field_56b9356df717b',
-						'label' => 'Blog categories',
+						'label' => __('Blog categories','govintranet'),
 						'name' => 'blog_categories',
 						'type' => 'taxonomy',
 						'instructions' => '',
@@ -104,7 +150,8 @@ class htFeatureBlogposts extends WP_Widget {
         extract( $args );
         $title = apply_filters('widget_title', $instance['title']);
         $items = intval($instance['items']);
-        $thumbnails = $instance['thumbnails'];
+        $thumbnails = get_field('thumbnails', 'widget_' . $widget_id); 
+        $forceavatar = get_field('force_author_avatar', 'widget_' . $widget_id); 
         $freshness = intval($instance['freshness']);
         if ( !$freshness ) $freshness = 14;
         $more = $instance['more'];
@@ -116,17 +163,17 @@ class htFeatureBlogposts extends WP_Widget {
 		$tdate=date('Y-m-d')." 00:00:00";
 		$freshness = "-".$freshness." day ";
         $tdate = date ( 'F jS, Y', strtotime ( $freshness . $tdate ) );  
-		$acf_key = "widget_" . $this->id_base . "-" . $this->number . "_pin_posts" ;  
-		$top_slot = get_option($acf_key); 
-		$acf_key = "widget_" . $this->id_base . "-" . $this->number . "_blog_categories" ;  
-		$blog_categories = get_option($acf_key); 
+		$top_slot = get_field('pin_posts', 'widget_' . $widget_id); 
+		$blog_categories = get_field('blog_categories', 'widget_' . $widget_id); 
 		$num_top_slots = 0;
 		if ( is_array($top_slot) ) $num_top_slots = count($top_slot); 
 		$to_fill = $items - $num_top_slots; 
 		$k = -1;
 		$alreadydone = array();
 		$titledone = 0;
-
+		$directorystyle = get_option('options_staff_directory_style'); // 0 = squares, 1 = circles
+		$avstyle = "";
+		if ( $directorystyle==1 ) $avstyle = " img-circle ";
 		$blogstransient = $widget_id;
 		$html = "";
 		if ( $cache > 0 ) $html = get_transient( $blogstransient );
@@ -157,11 +204,11 @@ class htFeatureBlogposts extends WP_Widget {
 					$edate = date(get_option('date_format'),strtotime($edate));
 					$thisURL = get_permalink();
 					$html.= "<div class='media'>";
-					if ($thumbnails=='on'){
+					if ($thumbnails){
 						$image_uri =  wp_get_attachment_image_src( get_post_thumbnail_id( ), 'thumbnail' ); 
-						if (!$image_uri){
-							$image_uri = get_avatar(get_the_author_meta('ID'),72);
-							$image_uri = str_replace("alignleft", "alignleft tinyblogthumb", $image_uri);
+						if (!$image_uri || $forceavatar){
+							$image_uri = get_avatar($post->post_author , 72, "", get_user_meta( $post->post_author, 'display_name', true), array('class'=>$avstyle));
+							$image_uri = str_replace("avatar ", "avatar ".$avstyle, $image_uri);
 							$html.= "<a class='pull-left' href='".get_permalink(get_the_id())."'>{$image_uri}</a>";		
 						} else {
 							$html.= "<a class='pull-left' href='".get_permalink(get_the_id())."'><img class='tinyblogthumb alignleft' src='{$image_uri[0]}' alt='".esc_attr($thistitle)."' /></a>";					}
@@ -203,8 +250,6 @@ class htFeatureBlogposts extends WP_Widget {
 					    'terms' => (array)$blog_categories,
 					    'compare' => "IN",
 				    ));
-
-			
 	
 			$blogs = new WP_Query($cquery);
 			if ($blogs->post_count!=0 && !$titledone ) {
@@ -230,11 +275,11 @@ class htFeatureBlogposts extends WP_Widget {
 				$edate = date(get_option('date_format'),strtotime($edate));
 				$thisURL=get_permalink(); 
 				$html.= "<div class='media'>";
-				if ($thumbnails=='on'){
+				if ($thumbnails){
 					$image_uri =  wp_get_attachment_image_src( get_post_thumbnail_id( ), 'thumbnail' ); 
-					if (!$image_uri){
-						$image_uri = get_avatar(get_the_author_meta('ID'),72);
-						$image_uri = str_replace("alignleft", "alignleft tinyblogthumb", $image_uri);
+					if (!$image_uri || $forceavatar){
+						$image_uri = get_avatar($post->post_author , 72, "", get_user_meta( $post->post_author, 'display_name', true), array('class'=>$avstyle));
+						$image_uri = str_replace("avatar ", "avatar ".$avstyle, $image_uri);
 						$html.= "<a class='pull-left' href='".get_permalink()."'>{$image_uri}</a>";		
 					} else {
 						$html.= "<a class='pull-left' href='".get_permalink()."'><img class='tinyblogthumb alignleft' src='{$image_uri[0]}' alt='".esc_attr($thistitle)."' /></a>";						
@@ -287,7 +332,6 @@ class htFeatureBlogposts extends WP_Widget {
 		$instance = $old_instance;
 		$instance['title'] = strip_tags($new_instance['title']);
 		$instance['items'] = strip_tags($new_instance['items']);
-		$instance['thumbnails'] = strip_tags($new_instance['thumbnails']);
 		$instance['freshness'] = strip_tags($new_instance['freshness']);
 		$instance['more'] = strip_tags($new_instance['more']);
 		$instance['moretitle'] = strip_tags($new_instance['moretitle']);
@@ -299,7 +343,6 @@ class htFeatureBlogposts extends WP_Widget {
     function form($instance) {
 		$title = esc_attr($instance['title']);
 		$items = esc_attr($instance['items']);
-		$thumbnails = esc_attr($instance['thumbnails']);
 		$freshness = esc_attr($instance['freshness']);
 		$excerpt = esc_attr($instance['excerpt']);
 		$more = esc_attr($instance['more']);
@@ -315,10 +358,6 @@ class htFeatureBlogposts extends WP_Widget {
 		<input class="widefat" id="<?php echo $this->get_field_id('freshness'); ?>" name="<?php echo $this->get_field_name('freshness'); ?>" type="text" value="<?php echo $freshness; ?>" /><br><br>
 		<input id="<?php echo $this->get_field_id('excerpt'); ?>" name="<?php echo $this->get_field_name('excerpt'); ?>" type="checkbox" <?php checked((bool) $instance['excerpt'], true ); ?> />
 		<label for="<?php echo $this->get_field_id('excerpt'); ?>"><?php _e('Show excerpt','govintranet'); ?></label> <br><br>
-		<input id="<?php echo $this->get_field_id('thumbnails'); ?>" name="<?php echo $this->get_field_name('thumbnails'); ?>" type="checkbox" <?php checked((bool) $instance['thumbnails'], true ); ?> />
-		<label for="<?php echo $this->get_field_id('thumbnails'); ?>"><?php _e('Show thumbnails','govintranet'); ?></label> 
-		<br><?php _e('Displays the featured image if present, otherwise the author avatar','govintranet'); ?>.
-		<br><br>
 		<input id="<?php echo $this->get_field_id('more'); ?>" name="<?php echo $this->get_field_name('more'); ?>" type="checkbox" <?php checked((bool) $instance['more'], true ); ?> />
 		<label for="<?php echo $this->get_field_id('more'); ?>"><?php _e('Show link to more','govintranet'); ?></label> <br><br>
 		<label for="<?php echo $this->get_field_id('moretitle'); ?>"><?php _e('Title for more','govintranet'); ?></label> <br>
