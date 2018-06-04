@@ -10445,7 +10445,7 @@ function gi_tag_cloud($taxonomy, $term, $post_type) {
 	$alltags = array();
 	if ( $posts->have_posts() ) while ($posts->have_posts()){
 	$posts->the_post();
-		$tags = get_the_tags($id);
+		$tags = get_the_tags($posts->ID);
 		if ( $tags ) foreach ($tags as $t){
 			if (isset($alltags[$t->slug]['count'])){
 				$alltags[$t->slug]['count']++;
@@ -10490,7 +10490,7 @@ function gi_howto_tag_cloud($posttype) {
 	$alltags = array();
 	if ( $posts->have_posts() ) while ($posts->have_posts()): 
 	$posts->the_post();
-		$tags = get_the_tags($p->ID); 
+		$tags = get_the_tags($posts->ID); 
 		if ( $tags ) foreach ((array)$tags as $t):
 			if ( !isset( $alltags[$t->slug]['count'] ) ):
 				$alltags[$t->slug]['count'] = 1;
@@ -10861,8 +10861,8 @@ function govintranet_custom_styles() {
 	
 	// write custom css for background header colour
 
-	$bg = get_theme_mod('link_color', '#428bca');
-	$bg = get_theme_mod('link_visited_color', '#7303aa');
+	$link_color = get_theme_mod('link_color', '#428bca');
+	$link_visited_color = get_theme_mod('link_visited_color', '#7303aa');
 	$headtext = get_theme_mod('header_textcolor', '#ffffff'); if ( substr($headtext, 0 , 1 ) != "#") $headtext="#".$headtext;
 	$headimage = get_theme_mod('header_image', '');
 	$custom_logo_id = get_theme_mod( 'custom_logo' );
@@ -10883,9 +10883,9 @@ function govintranet_custom_styles() {
 		 $giscc = $gishex; 
 	endif;
 
-	$custom_css.= "a, a .listglyph  {color: ".$bg.";}";
+	$custom_css.= "a, a .listglyph  {color: ".$link_color.";}";
 	$custom_css.= "a:visited.btn.btn-primary, a:link.btn.btn-primary {color:".$btn_text.";}";
-	$custom_css.= "a:visited, a:visited .listglyph {color: ".$bg.";}";
+	$custom_css.= "a:visited, a:visited .listglyph {color: ".$link_visited_color.";}";
 	if ($headimage != 'remove-header' ):
 		$custom_css.= "#topstrip  {	background: ".$gishex." url(".get_header_image()."); color: ".$headtext.";	}";
 	else:
@@ -10898,10 +10898,10 @@ function govintranet_custom_styles() {
 		#primarynav ul li a:hover {color: ".$gishex." !important; background: ".$headtext."; }	
 	}";
 	$custom_css.= ".btn-primary, .btn-primary a, #commentform #submit  { background: ".$giscc."; border: 1px solid ".$giscc."; color: ".$btn_text."; } ";
-	$custom_css.= "#utilitybar ul#menu-utilities li {border-right:1px solid ".$btn_text.";}";
+	$custom_css.= "#utilitybar ul.menu li {border-right:1px solid ".$btn_text.";}";
 	$custom_css.= ".btn-primary a:hover  { background: ".$gishex."; } ";
 	$custom_css.= "#topstrip a { color: ".$headtext."; }";
-	$custom_css.= "#utilitybar ul#menu-utilities li a, #menu-utilities { color: ".$headtext."; } ";
+	$custom_css.= "#utilitybar ul.menu li a { color: ".$headtext."; } ";
 	$custom_css.= "#footerwrapper  {border-top: ".$gisheight."px solid ".$giscc.";}";
 	$custom_css.= ".page-template-page-about-php .category-block h2 {border-top: ".$gisheight."px solid ".$giscc."; padding: 0.6em 0; }";
 	$custom_css.= ".h3border { border-bottom: 3px solid ".$gishex.";}";
@@ -10932,7 +10932,7 @@ function govintranet_custom_styles() {
 	#primarynav ul li:first-child  {	border-left: 1px solid ".$gishex.";	}
 	#searchformdiv button:hover { background: ".$gishex."; color: ".$btn_text."; }";		
 	$custom_css.= "a.wptag {color: ".$btn_text."; background: ".$gishex.";} \n";
-	if ($headimage != 'remove-header' && $headimage) $custom_css.= '#utilitybar ul#menu-utilities li a, #menu-utilities, #crownlink { text-shadow: 1px 1px #333; }'; 
+	if ($headimage != 'remove-header' && $headimage) $custom_css.= '#utilitybar ul.menu li a, #crownlink { text-shadow: 1px 1px #333; }'; 
 	
 	//write css for category colours
 	$terms = get_terms('category',array('hide_empty'=>false));
