@@ -120,13 +120,13 @@ class PHPExcel
 	private $_hasMacros = FALSE;
 
 	/**
-	* _macrosCode : all macros code (the vbaProject.bin file, this include form, code,  etc.), NULL if no macro
+	* _macrosCode : all macros code (the vbacasestudy.bin file, this include form, code,  etc.), NULL if no macro
 	*
 	* @var binary
 	*/
 	private $_macrosCode=NULL;
 	/**
-	* _macrosCertificate : if macros are signed, contains vbaProjectSignature.bin file, NULL if not signed
+	* _macrosCertificate : if macros are signed, contains vbacasestudiesignature.bin file, NULL if not signed
 	*
 	* @var binary
 	*/
@@ -194,7 +194,7 @@ class PHPExcel
 	}
 
 	/**
-	* Is the project signed ?
+	* Is the casestudy signed ?
 	*
 	* @return true|false
 	*/

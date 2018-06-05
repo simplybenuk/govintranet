@@ -1,7 +1,7 @@
 <?php
-/* Template name: Projects */
+/* Template name: Case Studies */
 
-get_header(); 
+get_header();
 wp_register_script( 'scripts_search', get_template_directory_uri() . '/js/ht-scripts-search.js','' ,'' ,true );
 wp_enqueue_script( 'scripts_search' );
 
@@ -33,28 +33,28 @@ if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
 					</div>
 					<div class="form-group input-md">
 						<button type="submit" class="btn btn-primary input-md"><?php _e('Search' , 'govintranet'); ?></button>
-					<input type="hidden" value="project" name = "post_types[]" />
+					<input type="hidden" value="casestudy" name = "post_types[]" />
 					</div>
 				</form>
 			</div>
 			<?php
-			$show = ''; 
-			if ( isset($_GET['show']) ) $show = $_GET['show'];
-			if ( $show != "all" ):
-				echo '<p><a href="?show=all">' . __("Show past projects","govintranet") . '</a></p>';
-			else:
-				echo '<p><a href="?show=">' . __("Only show open projects","govintranet") . '</a></p>';
-			endif;
-			
+			$show = "all";
+			// if ( isset($_GET['show']) ) $show = $_GET['show'];
+			// if ( $show != "all" ):
+			// 	echo '<p><a href="?show=">' . __("Only show open case studies","govintranet") . '</a></p>';
+			// else:
+			// 	echo '<p><a href="?show=all">' . __("Show past case studies","govintranet") . '</a></p>';
+			// endif;
+
 			$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-			$counter = 0;	
+			$counter = 0;
 			$tzone = get_option('timezone_string');
 			if ( $tzone ) date_default_timezone_set($tzone);
 			$sdate = date('Ymd');
-			$pquery = array ( 
-						'post_type' => 'project',
+			$pquery = array (
+						'post_type' => 'casestudy',
 						'posts_per_page' => -1,
-						'orderby' => 'name', 
+						'orderby' => 'name',
 						'order' => 'ASC',
 				       'paged' => $paged,
 					   'post_parent' => 0,
@@ -62,52 +62,52 @@ if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
 
 			if ( $show != "all" ) $pquery['meta_query']  = array(
 						       array(
-					           		'key' => 'project_end_date',
+					           		'key' => 'casestudy_end_date',
 					        	   'value' => $sdate,
 					    	       'compare' => '>=',
-					    	       'type' => 'DATE' 
-					    	       )  
+					    	       'type' => 'DATE'
+					    	       )
 						       );
-			
-			$projects =new WP_Query( $pquery );
-			if ($projects->post_count==0){
+
+			$casestudies =new WP_Query( $pquery );
+			if ($casestudies->post_count==0){
 				echo __("Nothing to show","govintranet") . ".";
 			}
-			while ($projects->have_posts()) {
-				$projects->the_post();
+			while ($casestudies->have_posts()) {
+				$casestudies->the_post();
 				$image_url = get_the_post_thumbnail($id, 'thumbnail', array('class' => 'alignright'));
 				echo "<div class='newsitem'>".$image_url ;
 				echo "<hr>";
-				$taskpod = get_post($post->ID); 
-				$context = "project";
+				$taskpod = get_post($post->ID);
+				$context = "casestudy";
 				$icon = "road";
 				?>
-				<h3>				
+				<h3>
 				<a href="<?php the_permalink(); ?>" title="<?php the_title_attribute( 'echo=1' ); ?>" rel="bookmark"><?php the_title(); ?></a></h3>
 
 				<?php
-				the_excerpt(); 
+				the_excerpt();
 				echo "</div>";
 			}
-			if (  $projects->max_num_pages > 1 ) : 
-				if (function_exists('wp_pagenavi')) : 
-					wp_pagenavi(array('query' => $projects)); 
-				else : 
-					next_posts_link(__('&larr; Older items','govintranet'), $projects->max_num_pages); 
-					previous_posts_link(__('Newer items &rarr;','govintranet'), $projects->max_num_pages); 
-				endif; 
-			endif; 
-			wp_reset_query();								
+			if (  $casestudies->max_num_pages > 1 ) :
+				if (function_exists('wp_pagenavi')) :
+					wp_pagenavi(array('query' => $casestudies));
+				else :
+					next_posts_link(__('&larr; Older items','govintranet'), $casestudies->max_num_pages);
+					previous_posts_link(__('Newer items &rarr;','govintranet'), $casestudies->max_num_pages);
+				endif;
+			endif;
+			wp_reset_query();
 			?>
 			</div>
 		</div>
 
 		<div class="col-lg-4 col-md-4 col-sm-4" id="sidebar">
 			<h2 class="sr-only">Sidebar</h2>
-			<?php 
-			get_template_part("part", "sidebar"); 
+			<?php
+			get_template_part("part", "sidebar");
 			get_template_part("part", "related");
-			if ( $cloud = gi_howto_tag_cloud('project') ): ?>
+			if ( $cloud = gi_howto_tag_cloud('casestudy') ): ?>
 			<div class='widget-box'>
 				<h3 class='widget-title'><?php _e('Browse by tag' , 'govintranet') ; ?></h3>
 				<?php echo $cloud; ?>

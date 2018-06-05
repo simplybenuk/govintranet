@@ -4,7 +4,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: GovIntranet v4\n"
+"casestudy-Id-Version: GovIntranet v4\n"
 "Report-Msgid-Bugs-To: Luke Oatham <lukeoatham@gmail.com>\n"
 "POT-Creation-Date: 2017-10-15 00:20+0100\n"
 "\"PO-Revision-Date: \n"
@@ -822,8 +822,8 @@ msgstr ""
 #: govintranet/page-how-do-i-alt.php:28 govintranet/page-how-do-i-alt.php:32
 #: govintranet/page-how-do-i-alt.php:38 govintranet/page-how-do-i.php:42
 #: govintranet/page-how-do-i.php:44 govintranet/page-how-do-i.php:49
-#: govintranet/page-how-do-i.php:55 govintranet/page-projects.php:30
-#: govintranet/page-projects.php:35
+#: govintranet/page-how-do-i.php:55 govintranet/page-casestudies.php:30
+#: govintranet/page-casestudies.php:35
 #: govintranet/page-staff-directory-masonry.php:45
 #: govintranet/page-vacancies.php:33 govintranet/search-staff.php:63
 #: govintranet/searchform.php:19 govintranet/searchform.php:28
@@ -2048,13 +2048,13 @@ msgstr ""
 #: govintranet/category.php:107 govintranet/page-event-past.php:283
 #: govintranet/page-event.php:174 govintranet/page-how-do-i-alt-classic.php:106
 #: govintranet/page-how-do-i-alt.php:99 govintranet/page-how-do-i.php:118
-#: govintranet/page-projects.php:112 govintranet/page-vacancies.php:201
+#: govintranet/page-casestudies.php:112 govintranet/page-vacancies.php:201
 #: govintranet/taxonomy-news-type.php:57
 msgid "Browse by tag"
 msgstr ""
 
 #: govintranet/category.php:143 govintranet/page-event-past.php:223
-#: govintranet/page-event.php:110 govintranet/page-projects.php:74
+#: govintranet/page-event.php:110 govintranet/page-casestudies.php:74
 #: govintranet/page-vacancies.php:146 govintranet/taxonomy-news-type.php:92
 #: plugins/ht-media-atoz/template-document-finder.php:442
 #: plugins/ht-media-atoz/template-media-atoz.php:458
@@ -2072,7 +2072,7 @@ msgstr ""
 #: govintranet/category.php:190 govintranet/page-blog.php:43
 #: govintranet/page-event-past.php:251 govintranet/page-event.php:142
 #: govintranet/page-news-multi.php:111 govintranet/page-news-updates.php:92
-#: govintranet/page-news.php:62 govintranet/page-projects.php:96
+#: govintranet/page-news.php:62 govintranet/page-casestudies.php:96
 #: govintranet/page-vacancies.php:153 govintranet/page-vacancies.php:186
 #: govintranet/search.php:292 govintranet/search.php:316
 #: govintranet/tag.php:318 govintranet/taxonomy-news-type.php:118
@@ -2084,7 +2084,7 @@ msgstr ""
 #: govintranet/category.php:191 govintranet/page-blog.php:44
 #: govintranet/page-event-past.php:252 govintranet/page-event.php:143
 #: govintranet/page-news-multi.php:112 govintranet/page-news-updates.php:93
-#: govintranet/page-news.php:63 govintranet/page-projects.php:97
+#: govintranet/page-news.php:63 govintranet/page-casestudies.php:97
 #: govintranet/page-vacancies.php:154 govintranet/page-vacancies.php:187
 #: govintranet/search.php:293 govintranet/search.php:317
 #: govintranet/tag.php:319 govintranet/taxonomy-news-type.php:119
@@ -2162,7 +2162,7 @@ msgstr ""
 
 #: govintranet/functions.php:220 govintranet/loop.php:90
 #: govintranet/tag.php:164
-msgid "project"
+msgid "casestudy"
 msgstr ""
 
 #: govintranet/functions.php:222
@@ -2664,43 +2664,43 @@ msgstr ""
 #: govintranet/functions.php:1518 govintranet/functions.php:1519
 #: govintranet/functions.php:2786 govintranet/functions.php:4439
 msgctxt "noun"
-msgid "Projects"
+msgid "casestudies"
 msgstr ""
 
 #: govintranet/functions.php:1520
-msgid "Add Project"
+msgid "Add casestudy"
 msgstr ""
 
 #: govintranet/functions.php:1521
-msgid "Add New Project"
+msgid "Add New casestudy"
 msgstr ""
 
 #: govintranet/functions.php:1523
-msgid "Edit Project"
+msgid "Edit casestudy"
 msgstr ""
 
 #: govintranet/functions.php:1524
-msgid "New Project"
+msgid "New casestudy"
 msgstr ""
 
 #: govintranet/functions.php:1525 govintranet/functions.php:1526
-msgid "View Project"
+msgid "View casestudy"
 msgstr ""
 
 #: govintranet/functions.php:1527
-msgid "Search Projects"
+msgid "Search casestudies"
 msgstr ""
 
 #: govintranet/functions.php:1528
-msgid "No Projects found"
+msgid "No casestudies found"
 msgstr ""
 
 #: govintranet/functions.php:1529
-msgid "No Projects found in trash"
+msgid "No casestudies found in trash"
 msgstr ""
 
 #: govintranet/functions.php:1530
-msgid "Parent Project"
+msgid "Parent casestudy"
 msgstr ""
 
 #: govintranet/functions.php:1541 govintranet/functions.php:1557
@@ -3401,7 +3401,7 @@ msgid "Icon for guides"
 msgstr ""
 
 #: govintranet/functions.php:3274
-msgid "Projects page"
+msgid "casestudies page"
 msgstr ""
 
 #: govintranet/functions.php:3334
@@ -3608,15 +3608,15 @@ msgid "Campaign message"
 msgstr ""
 
 #: govintranet/functions.php:4443
-msgid "Project overview"
+msgid "casestudy overview"
 msgstr ""
 
 #: govintranet/functions.php:4456
-msgid "Project start date"
+msgid "casestudy start date"
 msgstr ""
 
 #: govintranet/functions.php:4469
-msgid "Project end date"
+msgid "casestudy end date"
 msgstr ""
 
 #: govintranet/functions.php:4482
@@ -3726,10 +3726,10 @@ msgstr ""
 msgid "Closing time"
 msgstr ""
 
-#: govintranet/functions.php:5050 govintranet/single-project.php:69
-#: govintranet/single-project.php:188 govintranet/single-vacancy.php:75
+#: govintranet/functions.php:5050 govintranet/single-casestudy.php:69
+#: govintranet/single-casestudy.php:188 govintranet/single-vacancy.php:75
 msgctxt "noun"
-msgid "Project"
+msgid "casestudy"
 msgstr ""
 
 #: govintranet/functions.php:5095
@@ -4280,12 +4280,12 @@ msgstr ""
 msgid "Search by tag"
 msgstr ""
 
-#: govintranet/page-projects.php:44
-msgid "Show past projects"
+#: govintranet/page-casestudies.php:44
+msgid "Show past casestudies"
 msgstr ""
 
-#: govintranet/page-projects.php:46
-msgid "Only show open projects"
+#: govintranet/page-casestudies.php:46
+msgid "Only show open casestudies"
 msgstr ""
 
 #: govintranet/page-staff-directory-masonry.php:26
@@ -4336,12 +4336,12 @@ msgid "Documents"
 msgstr ""
 
 #: govintranet/part-task.php:137 govintranet/part-task.php:162
-#: govintranet/single-project.php:149 govintranet/single-project.php:170
+#: govintranet/single-casestudy.php:149 govintranet/single-casestudy.php:170
 msgid "Overview"
 msgstr ""
 
 #: govintranet/part-task.php:162 govintranet/part-task.php:170
-#: govintranet/single-project.php:170 govintranet/single-project.php:178
+#: govintranet/single-casestudy.php:170 govintranet/single-casestudy.php:178
 msgid "Navigate to previous part"
 msgstr ""
 
@@ -4405,7 +4405,7 @@ msgid "news updates"
 msgstr ""
 
 #: govintranet/search.php:183
-msgid "projects"
+msgid "casestudies"
 msgstr ""
 
 #: govintranet/search.php:187
@@ -4482,7 +4482,7 @@ msgstr ""
 
 #: govintranet/single-blog.php:144 govintranet/single-event.php:178
 #: govintranet/single-news-update.php:103 govintranet/single-news.php:112
-#: govintranet/single-project.php:253 govintranet/single-task.php:70
+#: govintranet/single-casestudy.php:253 govintranet/single-task.php:70
 #: govintranet/single-vacancy.php:122
 #: plugins/ht-content-report/ht_content_report_download.php:125
 msgid "Tags"
@@ -4545,13 +4545,13 @@ msgstr ""
 msgid "Recent news"
 msgstr ""
 
-#: govintranet/single-project.php:166 govintranet/single-project.php:172
-#: govintranet/single-project.php:181
+#: govintranet/single-casestudy.php:166 govintranet/single-casestudy.php:172
+#: govintranet/single-casestudy.php:181
 msgid "Navigate to next part"
 msgstr ""
 
-#: govintranet/single-project.php:197
-msgid "Project team"
+#: govintranet/single-casestudy.php:197
+msgid "casestudy team"
 msgstr ""
 
 #: govintranet/single-team.php:21
@@ -4581,7 +4581,7 @@ msgstr ""
 
 #: govintranet/tag.php:24
 #, php-format
-msgid "Projects tagged: %s"
+msgid "casestudies tagged: %s"
 msgstr ""
 
 #: govintranet/tag.php:27
@@ -4672,7 +4672,7 @@ msgstr ""
 
 #: govintranet/tag.php:455
 #, php-format
-msgid "<strong>Projects</strong> tagged: %s"
+msgid "<strong>casestudies</strong> tagged: %s"
 msgstr ""
 
 #: govintranet/tag.php:471
@@ -5473,7 +5473,7 @@ msgstr ""
 #: plugins/ht-most-active/ht_most_active.php:560
 #: plugins/ht-most-active/ht_top_tags.php:507
 #: plugins/ht-most-recent/ht_most_recent.php:260
-msgid "Projects"
+msgid "casestudies"
 msgstr ""
 
 #: plugins/ht-most-active/ht_most_active.php:578

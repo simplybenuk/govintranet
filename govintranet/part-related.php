@@ -6,15 +6,15 @@ $alreadydone = array();
 $related = get_post_meta($id,'related',true);
 $html='';
 if (is_array($related)){
-	foreach ($related as $r){ 
+	foreach ($related as $r){
 		$title_context="";
 		$rlink = get_post($r);
 		if ($rlink->post_status == 'publish' && $rlink->ID != $id ) {
-			$taskparent=$rlink->post_parent; 
+			$taskparent=$rlink->post_parent;
 			if ($taskparent){
 				$taskparent = get_post($taskparent);
 				$title_context=" (".get_the_title($taskparent->ID).")";
-			}		
+			}
 			$ext_icon = '';
 			$ext = '';
 			if ( get_post_format($r) == 'link' ):
@@ -29,15 +29,15 @@ if (is_array($related)){
 
 if ( !get_option("options_hide_reciprocal_related_links") ):
 	//get anything related to this post
-	$otherrelated = get_posts(array('post_type'=>array('task','news','project','vacancy','blog','team','event'),'posts_per_page'=>-1,'exclude'=>$related,'meta_query'=>array(array('key'=>'related','compare'=>'LIKE','value'=>'"'.$id.'"')))); 
+	$otherrelated = get_posts(array('post_type'=>array('task','news','casestudy','vacancy','blog','team','event'),'posts_per_page'=>-1,'exclude'=>$related,'meta_query'=>array(array('key'=>'related','compare'=>'LIKE','value'=>'"'.$id.'"'))));
 	foreach ($otherrelated as $o){
 		if ($o->post_status == 'publish' && $o->ID != $id ) {
-			$taskparent=$o->post_parent; 
+			$taskparent=$o->post_parent;
 			$title_context='';
 			if ($taskparent){
 				$taskparent = get_post($taskparent);
 				$title_context=" (".get_the_title($taskparent->ID).")";
-			}		
+			}
 			$html.= "<li><a href='".get_permalink($o->ID)."'>".get_the_title($o->ID).$title_context."</a></li>";
 			$alreadydone[] = $o->ID;
 		}
@@ -52,5 +52,5 @@ if ( $html ){
 	echo "</ul></div>";
 }
 
-	
-?>	
+
+?>

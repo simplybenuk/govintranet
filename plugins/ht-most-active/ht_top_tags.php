@@ -7,28 +7,28 @@ Author: Luke Oatham
 Version: 1.3.2
 Author URI: https://www.agentodigital.com
 */
- 
+
 class htTopTags extends WP_Widget {
 
 	function __construct() {
-		
+
 		parent::__construct(
 			'htTopTags',
 			__( 'HT Top tags' , 'govintranet'),
 			array( 'description' => __( 'Display top tags from pages with most pageviews' , 'govintranet') )
-		);   
+		);
     }
-    
+
     function widget($args, $instance) {
         extract( $args );
         $title = apply_filters('widget_title', $instance['title']);
         $items = intval($instance['items']);
-        $chart = $instance['chart']; 
+        $chart = $instance['chart'];
         $task = $instance['task'];
         $news = $instance['news'];
         $blog = $instance['blog'];
         $events = $instance['events'];
-        $project = $instance['project'];
+        $casestudy = $instance['casestudy'];
         $vacancy = $instance['vacancy'];
         $trail = intval($instance['trail']);
         $topnumber = intval($instance['topnumber']);
@@ -36,52 +36,52 @@ class htTopTags extends WP_Widget {
         $cache = intval($instance['cache']);
         if ( !isset($cache) || $cache == 0) $cache = 1;
 		$widget_id = $id;
-		
+
 	    $client_id = '956426687308-20cs4la3m295f07f1njid6ttoeinvi92.apps.googleusercontent.com';
 	    $client_secret = 'yzrrxZgCPqIu2gaqqq-uzB4D';
 	    $redirect_uri = 'urn:ietf:wg:oauth:2.0:oob';
-	    $account_id = 'ga:'.$ga_viewid; 
-		
+	    $account_id = 'ga:'.$ga_viewid;
+
 		wp_register_style( 'ht_top_tags', plugin_dir_url("/") . "ht-most-active/ht_top_tags.css");
 		wp_enqueue_style( 'ht_top_tags' );
 
 		global $post;
 		wp_reset_postdata();
-		global $id; 
+		global $id;
 		$to_fill = $items;
 		$k=0;
 		$alreadydone= array();
 		$toptagsslug =  array();
-				
+
 		//display manual overrides first
-		
+
 		$html = '';
 		$gatransient = substr( 'cached_ga_'.$widget_id.'_'.sanitize_file_name( $title ) , 0, 45 );
-	
+
 		//check to see if we have saved a cache of popular pages
-	
+
 		$cachedga = get_transient( $gatransient );
 
 		if ($cachedga) { // if we have a fresh cache just display immediately
 
-			foreach($cachedga as $result) { 
+			foreach($cachedga as $result) {
 				$k++;
 				$html.=$result;
 				$toptagsslug[]="cached";
 				if ($k>$items-1){
 					break;
-				}								
+				}
 			}
 			$manual = $k;
-	
-		} else { // ******************* LOAD FRESH ANALYTICS *******************************	
+
+		} else { // ******************* LOAD FRESH ANALYTICS *******************************
 
 		    include_once('GoogleAnalyticsAPI.class.php');
 			$ga = new GoogleAnalyticsAPI();
 			$ga->auth->setClientId($client_id); // From the APIs console
 			$ga->auth->setClientSecret($client_secret); // From the APIs console
 			$ga->auth->setRedirectUri($redirect_uri); // Url to your app, must match one in the APIs console
-	
+
 			// Get the Auth-Url
 			$url = $ga->auth->buildAuthUrl();
 
@@ -146,7 +146,7 @@ class htTopTags extends WP_Widget {
 		     *          If we're here, we sure we've got an access token and it's valid
 		     */
 			}
-			if ($gatoken!='') { 
+			if ($gatoken!='') {
 			    $ga->setAccessToken($gatoken);
 			    $ga->setAccountId($account_id);
 
@@ -160,11 +160,11 @@ class htTopTags extends WP_Widget {
 				$count = $topnumber;
 				$donefilter=false;
 				$filter='';
-				
+
 				$toptags=array();
 
 				//setup variables for the GA query
-				
+
 				if ($news=='on'){
 					$filter.='ga:pagePath=~/news/';
 					$donefilter=true;
@@ -184,9 +184,9 @@ class htTopTags extends WP_Widget {
 					$filter.='ga:pagePath=~/event/';
 					$donefilter=true;
 				}
-				if ($project=='on'){
+				if ($casestudy=='on'){
 					if ($donefilter) { $filter.= "||"; }
-					$filter.='ga:pagePath=~/project/';
+					$filter.='ga:pagePath=~/casestudy/';
 					$donefilter=true;
 				}
 				if ($vacancy=='on'){
@@ -209,14 +209,14 @@ class htTopTags extends WP_Widget {
 			        'sort'		 => '-ga:uniquePageviews',
 			    );
 			    $visits = $ga->query($params);
-				
+
 				$toptagsviews =  array();
 				$toptags =  array();
 				$toptagsslug =  array();
 
 				foreach($visits as $r=>$result) {
-					if ( $r == "rows") { 
-						foreach ($result as $res){ 
+					if ( $r == "rows") {
+						foreach ($result as $res){
 							if (strpos($res[0], "show=") ) continue;
 							if (strpos($res[0], "code=") ) continue;
 							if ($k>($items-1)) break;
@@ -230,13 +230,13 @@ class htTopTags extends WP_Widget {
 							$check = array_shift($pathparts);
 							$check = array_shift($pathparts);
 							$taskslug = implode("/",$pathparts);
-							if (strstr($filtered_pagepath,'/news/') && $news == 'on'  ){ 
-								$customquery = get_page_by_path( $taskslug, OBJECT, "news"); 
-								if (!$customquery || $customquery->post_status!="publish") continue;	
+							if (strstr($filtered_pagepath,'/news/') && $news == 'on'  ){
+								$customquery = get_page_by_path( $taskslug, OBJECT, "news");
+								if (!$customquery || $customquery->post_status!="publish") continue;
 								$taskid = 	$customquery->ID;
 								$post_tags = get_the_tags($taskid);
-								$pageviews = $res[1];			
-								if ( $post_tags ) foreach ($post_tags as $pt){ 
+								$pageviews = $res[1];
+								if ( $post_tags ) foreach ($post_tags as $pt){
 									if ( isset( $toptagsviews[$pt->slug] )):
 										$toptagsviews[$pt->slug]+=$pageviews;
 									else:
@@ -245,30 +245,30 @@ class htTopTags extends WP_Widget {
 									$toptags[$pt->slug]=$pt->name;
 									$toptagsslug[$pt->slug]=$pt->slug;
 								}
-								$alreadydone[] = $taskid;			
+								$alreadydone[] = $taskid;
 								$k++;
-							}		
+							}
 							if (strstr($filtered_pagepath,'/blog/') && $blog == 'on'  ){
-								$customquery = get_page_by_path( $taskslug, OBJECT, "blog"); 
-								if ($customquery->post_status!="publish") continue;	
+								$customquery = get_page_by_path( $taskslug, OBJECT, "blog");
+								if ($customquery->post_status!="publish") continue;
 								$taskid = 	$customquery->ID;
-								$post_tags = get_the_tags($taskid); 
-								$pageviews = $res[1];			
-								if ( $post_tags ) foreach ($post_tags as $pt){ 
+								$post_tags = get_the_tags($taskid);
+								$pageviews = $res[1];
+								if ( $post_tags ) foreach ($post_tags as $pt){
 									$toptagsviews[$pt->slug]+=$pageviews;
 									$toptags[$pt->slug]=$pt->name;
 									$toptagsslug[$pt->slug]=$pt->slug;
 								}
-								$alreadydone[] = $taskid;			
+								$alreadydone[] = $taskid;
 								$k++;
-							}	
+							}
 							if (strstr($filtered_pagepath,'/task/') && $task == 'on'  ){
-								$customquery = get_page_by_path( $taskslug, OBJECT, "task"); 
-								if ($customquery->post_status!="publish") continue;	
+								$customquery = get_page_by_path( $taskslug, OBJECT, "task");
+								if ($customquery->post_status!="publish") continue;
 								$taskid = 	$customquery->ID;
 								$post_tags = get_the_tags($taskid);
-								$pageviews = $res[1];			
-								if ( $post_tags ) foreach ($post_tags as $pt){ 
+								$pageviews = $res[1];
+								if ( $post_tags ) foreach ($post_tags as $pt){
 									if ( isset( $toptagsviews[$pt->slug] )):
 										$toptagsviews[$pt->slug]+=$pageviews;
 									else:
@@ -277,106 +277,106 @@ class htTopTags extends WP_Widget {
 									$toptags[$pt->slug]=$pt->name;
 									$toptagsslug[$pt->slug]=$pt->slug;
 								}
-								$alreadydone[] = $taskid;			
+								$alreadydone[] = $taskid;
 								$k++;
-							}		
+							}
 							if (strstr($filtered_pagepath,'/event/') && $events == 'on'  ){
-								$customquery = get_page_by_path( $taskslug, OBJECT, "event"); 
-								if ($customquery->post_status!="publish") continue;	
+								$customquery = get_page_by_path( $taskslug, OBJECT, "event");
+								if ($customquery->post_status!="publish") continue;
 								$taskid = 	$customquery->ID;
 								$post_tags = get_the_tags($taskid);
-								$pageviews = $res[1];			
-								foreach ($post_tags as $pt){ 
+								$pageviews = $res[1];
+								foreach ($post_tags as $pt){
 									$toptagsviews[$pt->slug]+=$pageviews;
 									$toptags[$pt->slug]=$pt->name;
 									$toptagsslug[$pt->slug]=$pt->slug;
 								}
-								$alreadydone[] = $taskid;			
+								$alreadydone[] = $taskid;
 								$k++;
-							}		
-							if (strstr($filtered_pagepath,'/project/') && $project == 'on'  ){
-								$customquery = get_page_by_path( $taskslug, OBJECT, "project"); 
-								if ($customquery->post_status!="publish") continue;		
-								$tasktitle =  $customquery->post_title ; 
+							}
+							if (strstr($filtered_pagepath,'/casestudy/') && $casestudy == 'on'  ){
+								$customquery = get_page_by_path( $taskslug, OBJECT, "casestudy");
+								if ($customquery->post_status!="publish") continue;
+								$tasktitle =  $customquery->post_title ;
 								$taskid = 	$customquery->ID;
 								if (!$tasktitle){
 									continue;
-								}	
+								}
 								if (in_array($taskid, $alreadydone )) {
 									continue;
 								}
 								$taskslug = $customquery->post_name;
 								$post_tags = get_the_tags($customquery->ID);
-								$pageviews = $res[1];			
+								$pageviews = $res[1];
 								if ( $post_tags ) foreach ($post_tags as $pt){
 									$toptagsviews[$pt->slug]+=$pageviews;
 									$toptags[$pt->slug]=$pt->name;
 									$toptagsslug[$pt->slug]=$pt->slug;
 								}
-								$alreadydone[] = $taskid;			
+								$alreadydone[] = $taskid;
 								$k++;
-							}				
+							}
 							if (strstr($filtered_pagepath,'/vacancy/') && $vacancy == 'on'  ){
-								$customquery = get_page_by_path( $taskslug, OBJECT, "vacancy"); 
-								if ($customquery->post_status!="publish") continue;		
-								$tasktitle =  $customquery->post_title ; 
+								$customquery = get_page_by_path( $taskslug, OBJECT, "vacancy");
+								if ($customquery->post_status!="publish") continue;
+								$tasktitle =  $customquery->post_title ;
 								$taskid = 	$customquery->ID;
 								if (!$tasktitle){
 									continue;
-								}	
+								}
 								if (in_array($taskid, $alreadydone )) {
 									continue;
 								}
 								$taskslug = $customquery->post_name;
 								$post_tags = get_the_tags($customquery->ID);
-								$pageviews = $res[1];			
+								$pageviews = $res[1];
 								if ( $post_tags ) foreach ($post_tags as $pt){
 									$toptagsviews[$pt->slug]+=$pageviews;
 									$toptags[$pt->slug]=$pt->name;
 									$toptagsslug[$pt->slug]=$pt->slug;
 								}
-								$alreadydone[] = $taskid;			
+								$alreadydone[] = $taskid;
 								$k++;
-							}	
+							}
 						}
 					}
 				}
 
 				//sort the arrays of tags and pageviews
-				array_multisort($toptagsviews,SORT_DESC,$toptags,$toptagsslug);		
+				array_multisort($toptagsviews,SORT_DESC,$toptags,$toptagsslug);
 				$grandtotal = 0;
 				$k=0;
 				$manual = 0;
 				$best = 0;
 
 				// work out the grand total
-				foreach ($toptagsslug as $tt){ 
+				foreach ($toptagsslug as $tt){
 					$k++;
-					$grandtotal = $grandtotal + intval($toptagsviews[$tt]); 
+					$grandtotal = $grandtotal + intval($toptagsviews[$tt]);
 					if ($k>($items-$manual)) break;
 					if ( intval($toptagsviews[$tt]) > $best ) $best = intval($toptagsviews[$tt]);
-				} 
-		
-				$k = 0;		
-				$q1 = 25; 
-				$q2 = 50; 
-				$q3 = 75; 
-				
+				}
+
+				$k = 0;
+				$q1 = 25;
+				$q2 = 50;
+				$q3 = 75;
+
 				//output each tag
-				foreach ($toptagsslug as $tt){ 
+				foreach ($toptagsslug as $tt){
 					$k++;
-					if ($k>$items-$manual) break;		    
-		
-					//work out the quartile of the page count so that we distribute evenly across the 4 hotness brackets			
+					if ($k>$items-$manual) break;
+
+					//work out the quartile of the page count so that we distribute evenly across the 4 hotness brackets
 					$percent = 100 / $best * $toptagsviews[$tt];
-		
+
 					//place into 1 of 4 brackets
 					if ( $percent >= $q3 ) $percentile = "p4";
 					if ( $percent < $q3 && $percent >= $q2) $percentile = "p3";
 					if ( $percent < $q2 && $percent >= $q1 ) $percentile = "p2";
 					if ( $percent < $q1 ) $percentile = "p1";
-		
-					if ( "on" == $chart ): 
+
+					if ( "on" == $chart ):
 						$temphtml='
 						<div id="ht_top_tags" class="progress">
 						  <div class="progress-bar progress-bar-title" style="width: 70%">
@@ -397,9 +397,9 @@ class htTopTags extends WP_Widget {
 						$html.='<span><a class="wptag '.$percentile.'" href="'.site_url().'/tag/'.$tt.'/">'.str_replace(' ', '&nbsp' , ucfirst($toptags[$tt])).'</a></span> ';
 						$transga[]='<span><a  class="wptag '.$percentile.'" href="'.site_url().'/tag/'.$tt.'/">'.str_replace(' ', '&nbsp' , ucfirst($toptags[$tt])).'</a></span> ';
 					endif;
-					
+
 				}
-				
+
 			}
 
 			//cache new tags if we are using caching
@@ -409,17 +409,17 @@ class htTopTags extends WP_Widget {
 		}
 
 		if ($toptagsslug){
-			echo $before_widget; 
-			if ( $title ) echo $before_title . $title . $after_title; 
+			echo $before_widget;
+			if ( $title ) echo $before_title . $title . $after_title;
 			echo '<div id="ht-top-tags">';
 			echo '<div class="descr">';
 			echo $html;
 			echo "</div>";
 			echo "</div>";
-			echo $after_widget; 
+			echo $after_widget;
 		}
 
-		wp_reset_query();								
+		wp_reset_query();
 		// end of trending
 
 	}
@@ -433,7 +433,7 @@ class htTopTags extends WP_Widget {
 		$instance['blog'] = strip_tags($new_instance['blog']);
 		$instance['task'] = strip_tags($new_instance['task']);
 		$instance['events'] = strip_tags($new_instance['events']);
-		$instance['project'] = strip_tags($new_instance['project']);
+		$instance['casestudy'] = strip_tags($new_instance['casestudy']);
 		$instance['vacancy'] = strip_tags($new_instance['vacancy']);
 		$instance['trail'] = strip_tags($new_instance['trail']);
 		$instance['topnumber'] = strip_tags($new_instance['topnumber']);
@@ -456,7 +456,7 @@ class htTopTags extends WP_Widget {
         $blog = esc_attr($instance['blog']);
         $task = esc_attr($instance['task']);
         $events = esc_attr($instance['events']);
-        $project = esc_attr($instance['project']);
+        $casestudy = esc_attr($instance['casestudy']);
         $vacancy = esc_attr($instance['vacancy']);
         $trail = esc_attr($instance['trail']);
         $topnumber = esc_attr($instance['topnumber']);
@@ -464,26 +464,26 @@ class htTopTags extends WP_Widget {
         $cache = esc_attr($instance['cache']);
         ?>
          <p>
-          <label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label> 
+          <label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label>
           <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /><br><br>
 
-          <label for="<?php echo $this->get_field_id('items'); ?>"><?php _e('Number of tags:'); ?></label> 
+          <label for="<?php echo $this->get_field_id('items'); ?>"><?php _e('Number of tags:'); ?></label>
           <input class="widefat" id="<?php echo $this->get_field_id('items'); ?>" name="<?php echo $this->get_field_name('items'); ?>" type="text" value="<?php echo $items; ?>" /><br><br>
-          
-          <label for="<?php echo $this->get_field_id('trail'); ?>"><?php _e('Days to trail:'); ?></label> 
+
+          <label for="<?php echo $this->get_field_id('trail'); ?>"><?php _e('Days to trail:'); ?></label>
           <input class="widefat" id="<?php echo $this->get_field_id('trail'); ?>" name="<?php echo $this->get_field_name('trail'); ?>" type="text" value="<?php echo $trail; ?>" /><br><br>
-          
-          <label for="<?php echo $this->get_field_id('cache'); ?>"><?php _e('Hours to cache:'); ?></label> 
+
+          <label for="<?php echo $this->get_field_id('cache'); ?>"><?php _e('Hours to cache:'); ?></label>
           <input class="widefat" id="<?php echo $this->get_field_id('cache'); ?>" name="<?php echo $this->get_field_name('cache'); ?>" type="text" value="<?php echo $cache; ?>" /><br><br>
 
 
-          <label for="<?php echo $this->get_field_id('ga_viewid'); ?>"><?php _e('GA View ID:'); ?></label> 
+          <label for="<?php echo $this->get_field_id('ga_viewid'); ?>"><?php _e('GA View ID:'); ?></label>
           <input class="widefat" id="<?php echo $this->get_field_id('ga_viewid'); ?>" name="<?php echo $this->get_field_name('ga_viewid'); ?>" type="text" value="<?php echo $ga_viewid; ?>" /><br><br>
 
           <input id="<?php echo $this->get_field_id('chart'); ?>" name="<?php echo $this->get_field_name('chart'); ?>" type="checkbox" <?php checked((bool) $instance['chart'], true ); ?> />
           <label for="<?php echo $this->get_field_id('chart'); ?>"><?php _e('Show chart'); ?></label> <br><br>
 
-          <label for="<?php echo $this->get_field_id('topnumber'); ?>"><?php _e('Include content from top #'); ?></label> 
+          <label for="<?php echo $this->get_field_id('topnumber'); ?>"><?php _e('Include content from top #'); ?></label>
           <input class="widefat" id="<?php echo $this->get_field_id('topnumber'); ?>" name="<?php echo $this->get_field_name('topnumber'); ?>" type="text" value="<?php echo $topnumber; ?>" /><br><br>
 
           <label>Include:</label><br>
@@ -503,15 +503,15 @@ class htTopTags extends WP_Widget {
           <input id="<?php echo $this->get_field_id('vacancy'); ?>" name="<?php echo $this->get_field_name('vacancy'); ?>" type="checkbox" <?php checked((bool) $instance['vacancy'], true ); ?> />
           <label for="<?php echo $this->get_field_id('vacancy'); ?>"><?php _e('Vacancies'); ?></label> <br>
 
-          <input id="<?php echo $this->get_field_id('project'); ?>" name="<?php echo $this->get_field_name('project'); ?>" type="checkbox" <?php checked((bool) $instance['project'], true ); ?> />
-          <label for="<?php echo $this->get_field_id('project'); ?>"><?php _e('Projects'); ?></label> <br><br>
+          <input id="<?php echo $this->get_field_id('casestudy'); ?>" name="<?php echo $this->get_field_name('casestudy'); ?>" type="checkbox" <?php checked((bool) $instance['casestudy'], true ); ?> />
+          <label for="<?php echo $this->get_field_id('casestudy'); ?>"><?php _e('casestudies'); ?></label> <br><br>
 
           <input id="<?php echo $this->get_field_id('reset'); ?>" name="<?php echo $this->get_field_name('reset'); ?>" type="checkbox"  />
           <label for="<?php echo $this->get_field_id('reset'); ?>"><?php _e('Reset authentification'); ?></label>  <br>
 
         </p>
 
-	<?php 
+	<?php
     }
 }
 

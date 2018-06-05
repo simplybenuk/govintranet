@@ -11,13 +11,13 @@ Author URI: https://www.agentodigital.com
 class htMostActive extends WP_Widget {
 
 	function __construct() {
-		
+
 		parent::__construct(
 			'htMostActive',
 			__( 'HT Most active' , 'govintranet'),
 			array( 'description' => __( 'Display pages with most pageviews' , 'govintranet') )
-		);   
-		
+		);
+
 		if( function_exists('register_field_group') ):
 
 			register_field_group(array (
@@ -96,7 +96,7 @@ class htMostActive extends WP_Widget {
         $items = intval($instance['items']);
         $pages = ($instance['pages']);
         $tasks = ($instance['tasks']);
-        $projects = ($instance['projects']);
+        $casestudies = ($instance['casestudies']);
         $vacancies = ($instance['vacancies']);
         $news = ($instance['news']);
         $blog = ($instance['blog']);
@@ -118,9 +118,9 @@ class htMostActive extends WP_Widget {
 
 	    $client_id = '956426687308-20cs4la3m295f07f1njid6ttoeinvi92.apps.googleusercontent.com';
 	    $client_secret = 'yzrrxZgCPqIu2gaqqq-uzB4D';
-		
+
 	    $redirect_uri = 'urn:ietf:wg:oauth:2.0:oob';
-	    $account_id = 'ga:'.$ga_viewid; 
+	    $account_id = 'ga:'.$ga_viewid;
 
 		$baseurl = site_url();
 		$to_fill = $items;
@@ -148,7 +148,7 @@ class htMostActive extends WP_Widget {
 			$ga->auth->setClientId($client_id); // From the APIs console
 			$ga->auth->setClientSecret($client_secret); // From the APIs console
 			$ga->auth->setRedirectUri($redirect_uri); // Url to your app, must match one in the APIs console
-	
+
 			// Get the Auth-Url
 			$url = $ga->auth->buildAuthUrl();
 
@@ -226,9 +226,9 @@ class htMostActive extends WP_Widget {
 				$start_date= date("Y-m-d",time()-(86400*$days_to_trail)); // last x days
 				$donefilter = false;
 				$filter = '';
-				
-				if ($projects=='on'){
-					$filter.='ga:pagePath=~/project/';
+
+				if ($casestudies=='on'){
+					$filter.='ga:pagePath=~/casestudy/';
 					$donefilter=true;
 				}
 				if ($tasks=='on'){
@@ -260,9 +260,9 @@ class htMostActive extends WP_Widget {
 					if ($donefilter) $filter.= "||";
 					$filter.='ga:pagePath=~/';
 					$donefilter=true;
-					if ($projects&&$tasks&&$vacancies&&$news&&$blog&&$events) $filter='ga:pagePath=~/';
+					if ($casestudies&&$tasks&&$vacancies&&$news&&$blog&&$events) $filter='ga:pagePath=~/';
 				}
-								
+
 				//check length of regular express; GA has a 128 character limit. If we're over, query everything and we'll filter results later.
 				if ( strlen($filter) > 128 ) $filter='ga:pagePath=~/';
 
@@ -279,7 +279,7 @@ class htMostActive extends WP_Widget {
 			        'dimensions' => 'ga:pagePath',
 			        'sort'		 => '-ga:uniquePageviews',
 			    );
-			    $visits = $ga->query($params); 
+			    $visits = $ga->query($params);
 				if ( $visits ) foreach($visits as $r=>$result) {
 					if ( $r == "rows" ) {
 						foreach ($result as $res){
@@ -297,21 +297,21 @@ class htMostActive extends WP_Widget {
 							$path = "/task/";
 							$pathlen = strlen($path);
 
-							if ( substr( $filtered_pagepath,0,$pathlen ) == $path && $tasks == 'on' ){ 
+							if ( substr( $filtered_pagepath,0,$pathlen ) == $path && $tasks == 'on' ){
 								$pathparts = explode("/", $res[0]);
 								if ( is_array($pathparts)){
 									if ( end($pathparts) == '' ) array_pop($pathparts);
-									$thistask = end($pathparts);								
+									$thistask = end($pathparts);
 									if ( in_array( $thistask, $stoppages ) ) continue;
 									$tasktitle = false;
 									$check = array_shift($pathparts);
 									$check = array_shift($pathparts);
-									$path = implode("/",$pathparts); 
+									$path = implode("/",$pathparts);
 									$taskpod = get_page_by_path( $path, OBJECT, 'task');
 									if ("publish" != $taskpod->post_status) continue;
 									$tasktitle =  govintranetpress_custom_title($taskpod->post_title);
 									$taskid = $taskpod->ID;
-									if ( $taskpod->post_parent ){ 
+									if ( $taskpod->post_parent ){
 										$taskpod2 = get_post($taskpod->post_parent);
 										if ( $showchapters != 1 ): // hide individual chapters
 											$taskid = $taskpod2->ID;
@@ -328,18 +328,18 @@ class htMostActive extends WP_Widget {
 								}
 							}
 
-							$path = "/news/"; 
-							$pathlen = strlen($path); 
-									
-							if (substr( $filtered_pagepath,0,$pathlen ) == $path && $news == 'on' ){ 
-								$pathparts = explode("/", $res[0]); 
+							$path = "/news/";
+							$pathlen = strlen($path);
+
+							if (substr( $filtered_pagepath,0,$pathlen ) == $path && $news == 'on' ){
+								$pathparts = explode("/", $res[0]);
 								if ( is_array($pathparts) ){
-									if ( end($pathparts) == '' ) array_pop($pathparts); 
-									$thistask = end($pathparts); 
+									if ( end($pathparts) == '' ) array_pop($pathparts);
+									$thistask = end($pathparts);
 									if ( in_array( $thistask, $stoppages ) ) continue;
 									$tasktitle=false;
 									$path = 'news/'.$thistask;
-									$taskpod = get_page_by_path( $thistask, OBJECT, 'news'); 
+									$taskpod = get_page_by_path( $thistask, OBJECT, 'news');
 									if ("publish" != $taskpod->post_status) continue;
 									$tasktitle=  $taskpod->post_title;
 									$taskid = $taskpod->ID;
@@ -349,20 +349,20 @@ class htMostActive extends WP_Widget {
 									$found = true;
 									$k++;
 								}
-							}	
+							}
 
-							$path = "/project/"; 
-							$pathlen = strlen($path); 
-								
-							if (substr( $filtered_pagepath,0,$pathlen ) == $path && $projects == 'on' ){ 
-								$pathparts = explode("/", $res[0]); 
+							$path = "/casestudy/";
+							$pathlen = strlen($path);
+
+							if (substr( $filtered_pagepath,0,$pathlen ) == $path && $casestudies == 'on' ){
+								$pathparts = explode("/", $res[0]);
 								if ( is_array($pathparts) ){
-									if ( end($pathparts) == '' ) array_pop($pathparts); 
-									$thistask = end($pathparts); 
+									if ( end($pathparts) == '' ) array_pop($pathparts);
+									$thistask = end($pathparts);
 									if ( in_array( $thistask, $stoppages ) ) continue;
 									$tasktitle=false;
-									$path = 'project/'.$thistask;
-									$taskpod = get_page_by_path( $thistask, OBJECT, 'project'); 
+									$path = 'casestudy/'.$thistask;
+									$taskpod = get_page_by_path( $thistask, OBJECT, 'casestudy');
 									if ("publish" != $taskpod->post_status) continue;
 									$tasktitle=  $taskpod->post_title;
 									$taskid = $taskpod->ID;
@@ -377,20 +377,20 @@ class htMostActive extends WP_Widget {
 									$found = true;
 									$k++;
 								}
-							}			
-							
-							$path = "/vacancy/"; 
-							$pathlen = strlen($path); 
-								
-							if (substr( $filtered_pagepath,0,$pathlen ) == $path && $vacancies == 'on' ){ 
-								$pathparts = explode("/", $res[0]); 
+							}
+
+							$path = "/vacancy/";
+							$pathlen = strlen($path);
+
+							if (substr( $filtered_pagepath,0,$pathlen ) == $path && $vacancies == 'on' ){
+								$pathparts = explode("/", $res[0]);
 								if ( is_array($pathparts) ){
-									if ( end($pathparts) == '' ) array_pop($pathparts); 
-									$thistask = end($pathparts); 
+									if ( end($pathparts) == '' ) array_pop($pathparts);
+									$thistask = end($pathparts);
 									if ( in_array( $thistask, $stoppages ) ) continue;
 									$tasktitle=false;
 									$path = 'vacancy/'.$thistask;
-									$taskpod = get_page_by_path( $thistask, OBJECT, 'vacancy'); 
+									$taskpod = get_page_by_path( $thistask, OBJECT, 'vacancy');
 									if ("publish" != $taskpod->post_status) continue;
 									$tasktitle=  $taskpod->post_title;
 									$taskid = $taskpod->ID;
@@ -400,20 +400,20 @@ class htMostActive extends WP_Widget {
 									$found = true;
 									$k++;
 								}
-							}			
-					
-							$path = "/event/"; 
-							$pathlen = strlen($path); 
-							
-							if (substr( $filtered_pagepath,0,$pathlen ) == $path && $events == 'on' ){ 
-								$pathparts = explode("/", $res[0]); 
+							}
+
+							$path = "/event/";
+							$pathlen = strlen($path);
+
+							if (substr( $filtered_pagepath,0,$pathlen ) == $path && $events == 'on' ){
+								$pathparts = explode("/", $res[0]);
 								if ( is_array($pathparts) ){
-									if ( end($pathparts) == '' ) array_pop($pathparts); 
-									$thistask = end($pathparts); 
+									if ( end($pathparts) == '' ) array_pop($pathparts);
+									$thistask = end($pathparts);
 									if ( in_array( $thistask, $stoppages ) ) continue;
 									$tasktitle=false;
 									$path = 'event/'.$thistask;
-									$taskpod = get_page_by_path( $thistask, OBJECT, 'event'); 
+									$taskpod = get_page_by_path( $thistask, OBJECT, 'event');
 									if ("publish" != $taskpod->post_status) continue;
 									$tasktitle=  $taskpod->post_title;
 									$taskid = $taskpod->ID;
@@ -423,20 +423,20 @@ class htMostActive extends WP_Widget {
 									$found = true;
 									$k++;
 								}
-							}	
-							
-							$path = "/blog/"; 
-							$pathlen = strlen($path); 
-							
-							if (substr( $filtered_pagepath,0,$pathlen ) == $path && $blog == 'on' ){ 
-								$pathparts = explode("/", $res[0]); 
+							}
+
+							$path = "/blog/";
+							$pathlen = strlen($path);
+
+							if (substr( $filtered_pagepath,0,$pathlen ) == $path && $blog == 'on' ){
+								$pathparts = explode("/", $res[0]);
 								if ( is_array($pathparts) ){
-									if ( end($pathparts) == '' ) array_pop($pathparts); 
-									$thistask = end($pathparts); 
+									if ( end($pathparts) == '' ) array_pop($pathparts);
+									$thistask = end($pathparts);
 									if ( in_array( $thistask, $stoppages ) ) continue;
 									$tasktitle=false;
 									$path = 'blog/'.$thistask;
-									$taskpod = get_page_by_path( $thistask, OBJECT, 'blog'); 
+									$taskpod = get_page_by_path( $thistask, OBJECT, 'blog');
 									if ("publish" != $taskpod->post_status) continue;
 									$tasktitle=  $taskpod->post_title;
 									$taskid = $taskpod->ID;
@@ -446,19 +446,19 @@ class htMostActive extends WP_Widget {
 									$found = true;
 									$k++;
 								}
-							}	
+							}
 
-							$path = "/"; 
-							$pathlen = strlen($path); 
-							
-							if ( $pages == 'on' && !$found ){ // show pages		
-								$pathparts = explode("/", $res[0]); 
+							$path = "/";
+							$pathlen = strlen($path);
+
+							if ( $pages == 'on' && !$found ){ // show pages
+								$pathparts = explode("/", $res[0]);
 								if ( is_array($pathparts) ){
-									if ( end($pathparts) == '' ) array_pop($pathparts); 
-									$thistask = end($pathparts); 
+									if ( end($pathparts) == '' ) array_pop($pathparts);
+									$thistask = end($pathparts);
 									if ( in_array( $thistask, $stoppages ) ) continue;
 									$path = $res[0];
-									$taskpod = get_page_by_path( $thistask, OBJECT, 'page'); 
+									$taskpod = get_page_by_path( $thistask, OBJECT, 'page');
 									if ( $taskpod ):
 										if ("publish" != $taskpod->post_status) continue;
 										$tasktitle=  $taskpod->post_title;
@@ -470,12 +470,12 @@ class htMostActive extends WP_Widget {
 										$k++;
 									endif;
 								}
-							}		
+							}
 							if ($tasktitle!='' ){
 								$html .= "<li><a ".$ext."href='" . get_permalink($taskid) . "'>" . $tasktitle . "</a>" . $tasktitlecontext . "</li>";
 								$transga[] = "<li><a ".$ext."href='" .  get_permalink($taskid) . "'>" . $tasktitle . "</a>" . $tasktitlecontext . "</li>";
 								$alreadydone[] = $taskid;
-							} 				
+							}
 						}
 					}
 				}
@@ -488,8 +488,8 @@ class htMostActive extends WP_Widget {
 		}
 
 		if ($k){
-			echo $before_widget; 
-	        if ( $title ) echo $before_title . $title . $after_title; 
+			echo $before_widget;
+	        if ( $title ) echo $before_title . $title . $after_title;
 			echo ("<ul>".$html."</ul>");
 			echo $after_widget;
 		}
@@ -505,7 +505,7 @@ class htMostActive extends WP_Widget {
 		$instance['items'] = strip_tags($new_instance['items']);
 		$instance['pages'] = strip_tags($new_instance['pages']);
 		$instance['tasks'] = strip_tags($new_instance['tasks']);
-		$instance['projects'] = strip_tags($new_instance['projects']);
+		$instance['casestudies'] = strip_tags($new_instance['casestudies']);
 		$instance['vacancies'] = strip_tags($new_instance['vacancies']);
 		$instance['news'] = strip_tags($new_instance['news']);
 		$instance['blog'] = strip_tags($new_instance['blog']);
@@ -527,7 +527,7 @@ class htMostActive extends WP_Widget {
         $items = esc_attr($instance['items']);
         $pages = esc_attr($instance['pages']);
         $tasks = esc_attr($instance['tasks']);
-        $projects = esc_attr($instance['projects']);
+        $casestudies = esc_attr($instance['casestudies']);
         $vacancies = esc_attr($instance['vacancies']);
         $news = esc_attr($instance['news']);
         $blog = esc_attr($instance['blog']);
@@ -556,8 +556,8 @@ class htMostActive extends WP_Widget {
           <input id="<?php echo $this->get_field_id('tasks'); ?>" name="<?php echo $this->get_field_name('tasks'); ?>" type="checkbox" <?php checked((bool) $instance['tasks'], true ); ?> />
           <label for="<?php echo $this->get_field_id('tasks'); ?>"><?php _e('Tasks and guides','govintranet'); ?></label> <br>
 
-          <input id="<?php echo $this->get_field_id('projects'); ?>" name="<?php echo $this->get_field_name('projects'); ?>" type="checkbox" <?php checked((bool) $instance['projects'], true ); ?> />
-          <label for="<?php echo $this->get_field_id('projects'); ?>"><?php _e('Projects','govintranet'); ?></label> <br>
+          <input id="<?php echo $this->get_field_id('casestudies'); ?>" name="<?php echo $this->get_field_name('casestudies'); ?>" type="checkbox" <?php checked((bool) $instance['casestudies'], true ); ?> />
+          <label for="<?php echo $this->get_field_id('casestudies'); ?>"><?php _e('casestudies','govintranet'); ?></label> <br>
 
           <input id="<?php echo $this->get_field_id('vacancies'); ?>" name="<?php echo $this->get_field_name('vacancies'); ?>" type="checkbox" <?php checked((bool) $instance['vacancies'], true ); ?> />
           <label for="<?php echo $this->get_field_id('vacancies'); ?>"><?php _e('Vacancies','govintranet'); ?></label> <br>

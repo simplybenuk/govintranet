@@ -478,23 +478,23 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
                     $macros = $customUI = NULL;
 					foreach ($relsWorkbook->Relationship as $ele) {
 						switch($ele['Type']){
-						case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet": 
+						case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet":
 							$worksheets[(string) $ele["Id"]] = $ele["Target"];
 							break;
-						// a vbaProject ? (: some macros)
-						case "http://schemas.microsoft.com/office/2006/relationships/vbaProject":
+						// a vbacasestudy ? (: some macros)
+						case "http://schemas.microsoft.com/office/2006/relationships/vbacasestudy":
 							$macros = $ele["Target"];
 							break;
 						}
 					}
 
 					if(!is_null($macros)){
-						$macrosCode = $this->_getFromZipArchive($zip, 'xl/vbaProject.bin');//vbaProject.bin always in 'xl' dir and always named vbaProject.bin
+						$macrosCode = $this->_getFromZipArchive($zip, 'xl/vbacasestudy.bin');//vbacasestudy.bin always in 'xl' dir and always named vbacasestudy.bin
 						if($macrosCode !== false){
 							$excel->setMacrosCode($macrosCode);
 							$excel->setHasMacros(true);
-							//short-circuit : not reading vbaProject.bin.rel to get Signature =>allways vbaProjectSignature.bin in 'xl' dir
-							$Certificate = $this->_getFromZipArchive($zip, 'xl/vbaProjectSignature.bin');
+							//short-circuit : not reading vbacasestudy.bin.rel to get Signature =>allways vbacasestudiesignature.bin in 'xl' dir
+							$Certificate = $this->_getFromZipArchive($zip, 'xl/vbacasestudiesignature.bin');
 							if($Certificate !== false)
 								$excel->setMacrosCertificate($Certificate);
 						}
@@ -1983,7 +1983,7 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
 		$nameCustomUI = basename($customUITarget);
         // get the xml file (ribbon)
 		$localRibbon = $this->_getFromZipArchive($zip, $customUITarget);
-		$customUIImagesNames = array(); 
+		$customUIImagesNames = array();
         $customUIImagesBinaries = array();
         // something like customUI/_rels/customUI.xml.rels
 		$pathRels = $baseDir . '/_rels/' . $nameCustomUI . '.rels';

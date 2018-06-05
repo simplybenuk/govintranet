@@ -91,14 +91,14 @@ class PHPExcel_Writer_Excel2007_ContentTypes extends PHPExcel_Writer_Excel2007_W
 				$this->_writeOverrideContentType(
 					$objWriter, '/xl/workbook.xml', 'application/vnd.ms-excel.sheet.macroEnabled.main+xml'
 				);
-				//... and define a new type for the VBA project
+				//... and define a new type for the VBA casestudy
 				$this->_writeDefaultContentType(
-							$objWriter, 'bin', 'application/vnd.ms-office.vbaProject'
+							$objWriter, 'bin', 'application/vnd.ms-office.vbacasestudy'
 						);
 				if($pPHPExcel->hasMacrosCertificate()){// signed macros ?
 					// Yes : add needed information
 					$this->_writeOverrideContentType(
-						$objWriter, '/xl/vbaProjectSignature.bin', 'application/vnd.ms-office.vbaProjectSignature'
+						$objWriter, '/xl/vbacasestudiesignature.bin', 'application/vnd.ms-office.vbacasestudiesignature'
 				);
 				}
 			}else{// no macros in workbook, so standard type
@@ -203,7 +203,7 @@ class PHPExcel_Writer_Excel2007_ContentTypes extends PHPExcel_Writer_Excel2007_W
 					$this->_writeDefaultContentType(
 						$objWriter, $aRibbonType, $mimeType
 					);
-				}	
+				}
 			}
 			$sheetCount = $pPHPExcel->getSheetCount();
 			for ($i = 0; $i < $sheetCount; ++$i) {

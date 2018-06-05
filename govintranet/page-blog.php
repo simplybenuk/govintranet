@@ -1,7 +1,7 @@
 <?php
 /* Template name: Blog   */
 
-get_header(); 
+get_header();
 
 if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
 
@@ -20,40 +20,40 @@ if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
 
 		$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
 		$posts_per_page = get_option('posts_per_page',10);
-		$counter = 0;	
+		$counter = 0;
 		$cquery = array(
 			'orderby' => 'post_date',
 		    'order' => 'DESC',
 		    'post_type' => 'blog',
 		    'posts_per_page' => $posts_per_page,
-		    'paged' => $paged												
+		    'paged' => $paged
 			);
 
-		$projectspost = new WP_Query($cquery);
-		global $k; 
+		$casestudiespost = new WP_Query($cquery);
+		global $k;
 		$k = 0;
-		while ($projectspost->have_posts()) : $projectspost->the_post();
+		while ($casestudiespost->have_posts()) : $casestudiespost->the_post();
 		get_template_part( 'loop', 'blogtwitter' );
 		endwhile;
-	    wp_reset_query();   //Restore global post data stomped by the_post(). 
-		if (  $projectspost->max_num_pages > 1 ) : 
-			if (function_exists('wp_pagenavi')) : 
-				wp_pagenavi(array('query' => $projectspost)); 
-			else : 
-				next_posts_link(__('&larr; Older items','govintranet'), $projectspost->max_num_pages); 
-				previous_posts_link(__('Newer items &rarr;','govintranet'), $projectspost->max_num_pages); 
-			endif; 
-		endif; 
-		wp_reset_query();								
-		?>							
+	    wp_reset_query();   //Restore global post data stomped by the_post().
+		if (  $casestudiespost->max_num_pages > 1 ) :
+			if (function_exists('wp_pagenavi')) :
+				wp_pagenavi(array('query' => $casestudiespost));
+			else :
+				next_posts_link(__('&larr; Older items','govintranet'), $casestudiespost->max_num_pages);
+				previous_posts_link(__('Newer items &rarr;','govintranet'), $casestudiespost->max_num_pages);
+			endif;
+		endif;
+		wp_reset_query();
+		?>
 	</div>
-	
+
 	<div class="col-lg-4 col-lg-offset-1 col-md-4 col-sm-12" id="sidebar">
 		<h2 class="sr-only">Sidebar</h2>
-		<?php 
-		get_template_part("part", "sidebar"); 
+		<?php
+		get_template_part("part", "sidebar");
 		get_template_part("part", "related");
-		dynamic_sidebar('bloglanding-widget-area'); 
+		dynamic_sidebar('bloglanding-widget-area');
 		$taxonomies=array();
 		$post_type = array();
 		$taxonomies[] = 'blog-category';

@@ -1,5 +1,5 @@
 <?php
-get_header(); 
+get_header();
 ?>
 <?php if ( have_posts() )  : the_post(); ?>
 
@@ -13,15 +13,15 @@ get_header();
 				</div>
 				<h1><?php
 				$posttype = '';
-				if ( isset( $_GET['type'] ) ) $posttype = $_GET['type']; 
+				if ( isset( $_GET['type'] ) ) $posttype = $_GET['type'];
 				$thistagid = get_queried_object()->term_id;
-				$thistagslug = get_queried_object()->slug; 
+				$thistagslug = get_queried_object()->slug;
 				$thistag = get_queried_object()->name;
 				if ($posttype == 'task'){
 					printf( __( 'Tasks/guides tagged: %s', 'govintranet' ), '' . $thistag. '' );
 				}
-				elseif ($posttype == 'project'){
-					printf( __( 'Projects tagged: %s', 'govintranet' ), '' . $thistag . '' );
+				elseif ($posttype == 'casestudy'){
+					printf( __( 'casestudies tagged: %s', 'govintranet' ), '' . $thistag . '' );
 				}
 				elseif ($posttype == 'vacancy'){
 					printf( __( 'Job vacancies tagged: %s', 'govintranet' ), '' . $thistag . '' );
@@ -74,21 +74,21 @@ get_header();
 	 				$tagquery=
 					"select object_id from $wpdb->term_relationships , $wpdb->term_taxonomy, $wpdb->terms, $wpdb->posts
 	where $wpdb->term_taxonomy.term_taxonomy_id = $wpdb->term_relationships.term_taxonomy_id AND
-	$wpdb->term_taxonomy.term_id = $wpdb->terms.term_id and 
+	$wpdb->term_taxonomy.term_id = $wpdb->terms.term_id and
 	$wpdb->terms.term_id = ".$thistagid." and
 	$wpdb->term_relationships.object_id = $wpdb->posts.id and
 	$wpdb->posts.post_status = 'publish'
 						";
-	 						
+
  				} else {
 	 				$tagquery=
 					"select post_title,object_id from $wpdb->term_relationships , $wpdb->term_taxonomy, $wpdb->terms, $wpdb->posts
 	where $wpdb->term_taxonomy.term_taxonomy_id = $wpdb->term_relationships.term_taxonomy_id AND
-	$wpdb->term_taxonomy.term_id = $wpdb->terms.term_id and 
+	$wpdb->term_taxonomy.term_id = $wpdb->terms.term_id and
 	$wpdb->terms.term_id = ".$thistagid." and
 	$wpdb->term_relationships.object_id = $wpdb->posts.id and
 	$wpdb->posts.post_status = 'publish' and
-	$wpdb->posts.post_type='" . $pt . "'"; 
+	$wpdb->posts.post_type='" . $pt . "'";
 				}
 				$testtag = $wpdb->get_results($tagquery);
 				if (count($testtag) > 0){
@@ -109,7 +109,7 @@ get_header();
 		 			'posts_per_page'=>$posts_per_page,
 		 			'orderby'=>'name',
 		 			'order'=>'ASC',
-		 			)); 
+		 			));
 				elseif ($pt =='event'): // tasks sorted by start date
 					$tagged = new WP_Query(array(
 		 			'post_type'=>array("event"),
@@ -119,10 +119,10 @@ get_header();
 		 			'orderby'=>'meta_value',
 		 			'order'=>'ASC',
 		 			'meta_key' => 'event_start_date',
-		 			)); 
+		 			));
 				else: // everything else sorted by date
 					$tagged = new WP_Query(array(
-		 			'post_type'=>array("task","vacancy","project","news","news-update","event","blog","page"),
+		 			'post_type'=>array("task","vacancy","casestudy","news","news-update","event","blog","page"),
 		 			'post__in'=>$carray,
 		 			'paged'=>$paged,
 		 			'posts_per_page'=>$posts_per_page,
@@ -130,25 +130,25 @@ get_header();
 		 			'order'=>'DESC'
 		 			));
 	 			endif;
-				$counter = 0;	
-	
+				$counter = 0;
+
 	 			while ($tagged->have_posts() && $postsfound ) {
 					$tagged->the_post();
-					$post_type = ucwords($post->post_type); 
+					$post_type = ucwords($post->post_type);
 					$image_url = get_the_post_thumbnail($id, 'thumbnail', array('class' => 'alignright'));
 					$ext_icon = '';
-					$title_context='';	
+					$title_context='';
 					$context='';
 					$titlecontext='';
 					$posttax='';
 					echo "<div class='media'>" ;
-					if ($post_type=='Post_tag') $icon = "tag"; 
+					if ($post_type=='Post_tag') $icon = "tag";
 					$post_cat = array();
 					if ($post_type=='Task'){
 						$post_cat = get_the_category();
 						$posttax='Category';
-						$taskpod = $post->post_parent; 
-						if ( !$taskpod ){		
+						$taskpod = $post->post_parent;
+						if ( !$taskpod ){
 							$context = __("task","govintranet");
 							$icon = "question-sign";
 						} else {
@@ -156,76 +156,76 @@ get_header();
 							$icon = "book";
 							$taskparent=get_post($taskpod);
 							if ($taskparent){
-								$title_context=" (".get_the_title($taskparent->ID).")";  
+								$title_context=" (".get_the_title($taskparent->ID).")";
 							}
-						}			
+						}
 					}
-					if ($post_type=='Project'){
-						$context = __("project","govintranet");
+					if ($post_type=='casestudy'){
+						$context = __("casestudy","govintranet");
 						$posttax='Category';
 						$icon = "road";
 						$projparent=$post->post_parent;
 						if ($projparent){
 							$projparent = get_post($projparent);
 							$title_context=" (".get_the_title($projparent->ID).")";
-						}			
+						}
 					}
 					if ($post_type=='News'){
 							$post_cat = get_the_terms($post->ID, 'news-type');
 							$context = __("news","govintranet");
 							$posttax='Type';
-							$icon = "star-empty";			
+							$icon = "star-empty";
 					}
 					if ($post_type=='News-update'){
 							$post_cat = get_the_terms($post->ID, 'news-update-type');
 							$context = __("news update","govintranet");
 							$posttax='Type';
-							$icon = "star-empty";			
+							$icon = "star-empty";
 					}
 					if ($post_type=='Vacancy'){
 							$post_cat = get_the_category();
 							$context = __("job vacancy","govintranet");
-							$icon = "random";			
+							$icon = "random";
 					}
 					if ($post_type=='Blog'){
 							$post_cat = get_the_terms($post->ID, 'blog-category');
 							$context = __("blog","govintranet");
 							$posttax='Category';
-							$icon = "comment";			
+							$icon = "comment";
 					}
 					if ($post_type=='Event'){
 							$post_cat = get_the_terms($post->ID, 'event-type');
 							$context = __("event","govintranet");
 							$posttax='Type';
-							$icon = "calendar";			
+							$icon = "calendar";
 					}
 					if ($post_type=='Jargon-buster'){
 							$context = __("jargon buster","govintranet");
-							$icon = "th-list";			
+							$icon = "th-list";
 					}
 					if ($post_type=='User'){
 							$context = __("staff","govintranet");
-							$icon = "user";			
+							$icon = "user";
 					}
 					if ($post_type=='Page'){
 							$context = __("Page","govintranet");
-							$icon = "page";			
+							$icon = "page";
 					}
-					if ($post_type=='Attachment'): 
+					if ($post_type=='Attachment'):
 						$context= __('download',"govintranet");
-						$icon = "download";			
+						$icon = "download";
 						?>
-						<h3>				
+						<h3>
 						<a href="<?php echo wp_get_attachment_url( $post->id ); ?>" title="<?php the_title_attribute( 'echo=1' ); ?>" rel="bookmark"><?php the_title();  ?></a></h3>
-						<?php 
-					elseif ($post_type=='User'): 
+						<?php
+					elseif ($post_type=='User'):
 						?>
-						<h3>				
+						<h3>
 						<a href="<?php echo $userurl; ?>" title="<?php the_title_attribute( 'echo=1' ); ?>" rel="bookmark"><?php the_title();  ?></a></h3>
-					
-						<?php 
+
+						<?php
 					else: ?>
-						<h3>				
+						<h3>
 						<a href="<?php echo get_the_permalink(get_the_id()); ?>" title="<?php the_title_attribute( 'echo=1' ); ?>" rel="bookmark"><?php echo get_the_title($post->ID); echo "</a> <small>".$title_context."</small>"; ?><?php echo $ext_icon; ?>
 						</h3>
 						<?php
@@ -235,7 +235,7 @@ get_header();
 					$termsfound = array();
 					if ( $post_cat ) foreach($post_cat as $cat){
 						if ($cat->term_id != 1 ){
-							$termsfound[]= "<span>".esc_html($cat->name)."</span>";							
+							$termsfound[]= "<span>".esc_html($cat->name)."</span>";
 						}
 					}
 					if ( count($termsfound) > 0 ){
@@ -246,15 +246,15 @@ get_header();
 					the_permalink();
 					echo "'><div class='hidden-xs'>".$image_url."</div></a>" ;
 					echo "<div class='media-body'>";
-					
-					if (($post_type=="Task")){					
-						the_excerpt(); 				
+
+					if (($post_type=="Task")){
+						the_excerpt();
 						echo "<div class='cat-context-list'><p>";
 						echo '<span class="listglyph">'.ucfirst($context).'</span>&nbsp;';
 						echo $terms;
 						echo "</p></div>";
 					} elseif (($post_type=="News" || $post_type=="Blog" || $post_type=="News-update" )){
-						the_excerpt(); 				
+						the_excerpt();
 						echo "<div class='cat-context-list'><p>";
 						echo '<span class="listglyph">'.ucfirst($context).'</span>&nbsp;';
 					   $thisdate= $post->post_date;
@@ -262,16 +262,16 @@ get_header();
 					   echo "<span class='listglyph'>".$thisdate."</span>&nbsp;";
 						echo $terms;
 					   echo "</p></div>";
-					} elseif ($post_type=="Event" ){ 
-						the_excerpt(); 				
+					} elseif ($post_type=="Event" ){
+						the_excerpt();
 						echo "<div class='cat-context-list'><p>";
 						$thisdate= get_post_meta($post->ID, 'event_start_date', true);
 						$thisdate=date(get_option('date_format'),strtotime($thisdate));
 						echo '<span class="listglyph">'.ucfirst($context).'&nbsp;'.$thisdate.'</span>&nbsp;';
 						echo $terms;
 						echo "</p></div>";
-					} elseif ($post_type=="Vacancy" ){ 
-						the_excerpt(); 				
+					} elseif ($post_type=="Vacancy" ){
+						the_excerpt();
 						echo "<div class='cat-context-list'><p>";
 						$thisdate = get_post_meta($post->ID, 'vacancy_closing_date', true);
 						$thisdate = date(get_option('date_format'),strtotime($thisdate));
@@ -281,7 +281,7 @@ get_header();
 						echo $terms;
 						echo "</p></div>";
 					} elseif ($post_type!="Page" ) {
-						the_excerpt(); 				
+						the_excerpt();
 						echo "<div class='cat-context-list'><p>";
 						echo '<span class="listglyph">'.ucfirst($context).'</span>&nbsp;';
 						$thisdate= $post->post_modified;
@@ -294,22 +294,22 @@ get_header();
 					}
 					?>
 					</div>
-					<?php	
-					if ($post_type=='Post_tag') { 
-						printf( __("All intranet pages tagged with \"%s\"" , 'govintranet' ), get_the_title() ); 
-					} else if ($post_type=='Category') { 
-						printf( __("All intranet pages categorised as \"%s\"" , 'govintranet' ), get_the_title() ); 
+					<?php
+					if ($post_type=='Post_tag') {
+						printf( __("All intranet pages tagged with \"%s\"" , 'govintranet' ), get_the_title() );
+					} else if ($post_type=='Category') {
+						printf( __("All intranet pages categorised as \"%s\"" , 'govintranet' ), get_the_title() );
 
 					}
-								
+
 					//for rating stories
 			 		if (function_exists('wp_gdsr_render_article')){
 				 		wp_gdsr_render_article(44, true, 'soft', 16);
 					}
-					
+
 					?>
 					</div>
-					<?php 
+					<?php
 					echo "<hr>";
 
 				}
@@ -318,10 +318,10 @@ get_header();
 					<?php wp_pagenavi(array('query' => $tagged)); ?>
 					<?php else : ?>
 					<?php next_posts_link(__('&larr; Older items','govintranet'), $tagged->max_num_pages); ?>
-					<?php previous_posts_link(__('Newer items &rarr;','govintranet'), $tagged->max_num_pages); ?>						
+					<?php previous_posts_link(__('Newer items &rarr;','govintranet'), $tagged->max_num_pages); ?>
 				<?php endif; ?>
-				<?php endif; 
-				wp_reset_query();								
+				<?php endif;
+				wp_reset_query();
 				?>
 
 				</div>
@@ -337,11 +337,11 @@ get_header();
 						?>
 						</h3>
 						<ul>
-						<?php					
+						<?php
 						$t=get_tag($thistagid);
 						$t=$thistagslug;
 						if ($posttype == 'task'){
-							$landingpage = get_option('options_module_tasks_page'); 
+							$landingpage = get_option('options_module_tasks_page');
 							if ( !$landingpage ):
 								$landingpage_link_text = 'tasks and guides';
 								$landingpage = site_url().'/how-do-i/';
@@ -351,11 +351,11 @@ get_header();
 							endif;
 							echo "<li><a href='".$landingpage."'>" . sprintf ( __('Go to %s' , 'govintranet') , $landingpage_link_text ) ."</a></li>";
 						}
-						if ($posttype == 'project'){
-							$landingpage = get_option('options_module_projects_page'); 
+						if ($posttype == 'casestudy'){
+							$landingpage = get_option('options_module_casestudies_page');
 							if ( !$landingpage ):
-								$landingpage_link_text = 'projects';
-								$landingpage = site_url().'/projects/';
+								$landingpage_link_text = 'casestudies';
+								$landingpage = site_url().'/casestudies/';
 							else:
 								$landingpage_link_text = get_the_title( $landingpage[0] );
 								$landingpage = get_permalink( $landingpage[0] );
@@ -363,7 +363,7 @@ get_header();
 							echo "<li><a href='".$landingpage."'>" . sprintf ( __('Go to %s' , 'govintranet') , $landingpage_link_text ) ."</a></li>";
 						}
 						if ($posttype == 'event'){
-							$landingpage = get_option('options_module_events_page'); 
+							$landingpage = get_option('options_module_events_page');
 							if ( !$landingpage ):
 								$landingpage_link_text = 'events';
 								$landingpage = site_url().'/events/';
@@ -374,7 +374,7 @@ get_header();
 							echo "<li><a href='".$landingpage."'>" . sprintf ( __('Go to %s' , 'govintranet') , $landingpage_link_text ) ."</a></li>";
 						}
 						if ($posttype == 'blog'){
-							$landingpage = get_option('options_module_blog_page'); 
+							$landingpage = get_option('options_module_blog_page');
 							if ( !$landingpage ):
 								$landingpage_link_text = 'blogposts';
 								$landingpage = site_url().'/blogs/';
@@ -385,7 +385,7 @@ get_header();
 							echo "<li><a href='".$landingpage."'>" . sprintf ( __('Go to %s' , 'govintranet') , $landingpage_link_text ) ."</a></li>";
 						}
 						if ($posttype == 'news'){
-							$landingpage = get_option('options_module_news_page'); 
+							$landingpage = get_option('options_module_news_page');
 							if ( !$landingpage ):
 								$landingpage_link_text = 'news';
 								$landingpage = site_url().'/newspage/';
@@ -396,7 +396,7 @@ get_header();
 							echo "<li><a href='".$landingpage."'>" . sprintf ( __('Go to %s' , 'govintranet') , $landingpage_link_text ) ."</a></li>";
 						}
 						if ($posttype == 'news-update'){
-							$landingpage = get_option('options_module_news_update_page'); 
+							$landingpage = get_option('options_module_news_update_page');
 							if ( !$landingpage ):
 								$landingpage_link_text = 'news updates';
 								$landingpage = site_url().'/news-updates/';
@@ -407,7 +407,7 @@ get_header();
 							echo "<li><a href='".$landingpage."'>" . sprintf ( __('Go to %s' , 'govintranet') , $landingpage_link_text ) ."</a></li>";
 						}
 						if ($posttype == 'vacancy'){
-							$landingpage = get_option('options_module_vacancies_page'); 
+							$landingpage = get_option('options_module_vacancies_page');
 							if ( !$landingpage ):
 								$landingpage_link_text = 'vacancies';
 								$landingpage = site_url().'/vacancies/';
@@ -422,7 +422,7 @@ get_header();
 						if ($posttype != ''){
 						echo "<li><a href='".get_tag_link( $thistagid )."'>";
 							printf( __( '<strong>Everything</strong> tagged: %s', 'govintranet' ), '' . $thistag . '' );
-						echo "</a></li>";		
+						echo "</a></li>";
 						}
 						if ($posttype != 'task'){
 							$tagquery=
@@ -438,24 +438,24 @@ get_header();
 							if ($testtag[0]->numtags > 0){
 								echo "<li><a href='".get_tag_link( $thistagid )."?type=task'>";
 								printf( __( '<strong>Tasks and guides</strong> tagged: %s', 'govintranet' ), '' . $thistag . '' );
-								echo "</a></li>";		
+								echo "</a></li>";
 							}
 						}
-						if ($posttype != 'project'){
+						if ($posttype != 'casestudy'){
 							$tagquery=
 							"select count(distinct $wpdb->posts.id) as numtags from $wpdb->posts
 							 join $wpdb->term_relationships on $wpdb->term_relationships.object_id = $wpdb->posts.id
 							 join $wpdb->term_taxonomy on $wpdb->term_taxonomy.term_taxonomy_id = $wpdb->term_relationships.term_taxonomy_id
 							 join $wpdb->terms on $wpdb->terms.term_id = $wpdb->term_taxonomy.term_id
 							where $wpdb->terms.slug='".$t."' AND
-							$wpdb->posts.post_type='project' AND
+							$wpdb->posts.post_type='casestudy' AND
 							$wpdb->posts.post_status = 'publish'
 								";
 							$testtag = $wpdb->get_results($tagquery);
 							if ($testtag[0]->numtags > 0){
-								echo "<li><a href='".get_tag_link( $thistagid )."?type=project'>";
-								printf( __( '<strong>Projects</strong> tagged: %s', 'govintranet' ), '' . $thistag . '' );
-								echo "</a></li>";		
+								echo "<li><a href='".get_tag_link( $thistagid )."?type=casestudy'>";
+								printf( __( '<strong>casestudies</strong> tagged: %s', 'govintranet' ), '' . $thistag . '' );
+								echo "</a></li>";
 							}
 						}
 						if ($posttype != 'vacancy'){
@@ -471,7 +471,7 @@ get_header();
 							if ($testtag[0]->numtags > 0){
 								echo "<li><a href='".get_tag_link( $thistagid )."?type=vacancy'>";
 								printf( __( '<strong>Job vacancies</strong> tagged: %s', 'govintranet' ), '' . $thistag . '' );
-								echo "</a></li>";		
+								echo "</a></li>";
 							}
 						}
 						if ($posttype != 'news'){
@@ -488,7 +488,7 @@ get_header();
 							if ($testtag[0]->numtags > 0){
 								echo "<li><a href='".get_tag_link( $thistagid )."?type=news'>";
 								printf( __( '<strong>News</strong> tagged: %s', 'govintranet' ), '' . $thistag . '' );
-								echo "</a></li>";		
+								echo "</a></li>";
 							}
 						}
 						if ($posttype != 'news-update'){
@@ -505,7 +505,7 @@ get_header();
 							if ($testtag[0]->numtags > 0){
 								echo "<li><a href='".get_tag_link( $thistagid )."?type=news-update'>";
 								printf( __( '<strong>News updates</strong> tagged: %s', 'govintranet' ), '' . $thistag . '' );
-								echo "</a></li>";		
+								echo "</a></li>";
 							}
 						}
 						if ($posttype != 'blog'){
@@ -522,7 +522,7 @@ get_header();
 							if ($testtag[0]->numtags > 0){
 								echo "<li><a href='".get_tag_link( $thistagid )."?type=blog'>";
 								printf( __( '<strong>Blog posts</strong> tagged: %s', 'govintranet' ), '' . $thistag . '' );
-								echo "</a></li>";		
+								echo "</a></li>";
 							}
 						}
 						if ($posttype != 'page'){
@@ -539,7 +539,7 @@ get_header();
 							if ($testtag[0]->numtags > 0){
 								echo "<li><a href='".get_tag_link( $thistagid )."?type=page'>";
 								printf( __( '<strong>Pages</strong> tagged: %s', 'govintranet' ), '' . $thistag . '' );
-								echo "</a></li>";		
+								echo "</a></li>";
 							}
 						}
 						if ($posttype != 'event'){
@@ -556,12 +556,12 @@ get_header();
 							if ($testtag[0]->numtags > 0){
 								echo "<li><a href='".get_tag_link( $thistagid )."?type=event'>";
 								printf( __( '<strong>Events</strong> tagged: %s', 'govintranet' ), '' . $thistag . '' );
-								echo "</a></li>";		
+								echo "</a></li>";
 							}
 						}
 						?>
 					</ul>
-				</div>					
+				</div>
 			</div>
 <?php endif; ?>
 

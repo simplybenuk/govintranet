@@ -245,15 +245,15 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
 			// Add [Content_Types].xml to ZIP file
 			$objZip->addFromString('[Content_Types].xml', 			$this->getWriterPart('ContentTypes')->writeContentTypes($this->_spreadSheet, $this->_includeCharts));
 
-			//if hasMacros, add the vbaProject.bin file, Certificate file(if exists)
+			//if hasMacros, add the vbacasestudy.bin file, Certificate file(if exists)
 			if($this->_spreadSheet->hasMacros()){
 				$macrosCode=$this->_spreadSheet->getMacrosCode();
 				if(!is_null($macrosCode)){// we have the code ?
-					$objZip->addFromString('xl/vbaProject.bin', $macrosCode);//allways in 'xl', allways named vbaProject.bin
+					$objZip->addFromString('xl/vbacasestudy.bin', $macrosCode);//allways in 'xl', allways named vbacasestudy.bin
 					if($this->_spreadSheet->hasMacrosCertificate()){//signed macros ?
 						// Yes : add the certificate file and the related rels file
-						$objZip->addFromString('xl/vbaProjectSignature.bin', $this->_spreadSheet->getMacrosCertificate());
-						$objZip->addFromString('xl/_rels/vbaProject.bin.rels',
+						$objZip->addFromString('xl/vbacasestudiesignature.bin', $this->_spreadSheet->getMacrosCertificate());
+						$objZip->addFromString('xl/_rels/vbacasestudy.bin.rels',
 							$this->getWriterPart('RelsVBA')->writeVBARelationships($this->_spreadSheet));
 					}
 				}
@@ -273,7 +273,7 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
 						$this->getWriterPart('RelsRibbonObjects')->writeRibbonRelationships($this->_spreadSheet));
 				}
 			}
-			
+
 			// Add relationships to ZIP file
 			$objZip->addFromString('_rels/.rels', 					$this->getWriterPart('Rels')->writeRelationships($this->_spreadSheet));
 			$objZip->addFromString('xl/_rels/workbook.xml.rels', 	$this->getWriterPart('Rels')->writeWorkbookRelationships($this->_spreadSheet));

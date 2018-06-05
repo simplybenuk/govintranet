@@ -11,7 +11,7 @@ Author URI: https://www.agentodigital.com
 class htAboutThisPage extends WP_Widget {
 
 	function __construct() {
-		
+
 		parent::__construct(
 			'htAboutThisPage',
 			__( 'HT About this page' , 'govintranet'),
@@ -58,7 +58,7 @@ class htAboutThisPage extends WP_Widget {
 			"page-news-multi.php",
 			"page-news-updates.php",
 			"page-news.php",
-			"page-projects.php",
+			"page-casestudies.php",
 			"page-staff-directory-masonry.php",
 			"page-vacancies.php",
 			"search.php"
@@ -68,17 +68,17 @@ class htAboutThisPage extends WP_Widget {
 
 		if ($showabout) {
 			$path = plugin_dir_url( __FILE__ );
-	
+
 			if (!wp_script_is('jquery', 'queue')){
 				wp_enqueue_script('jquery');
 			}
 	        wp_enqueue_script( 'ht_about_this_page', $path.'js/ht_about_this_page.js' );
 	        wp_enqueue_script( 'timeago', $path.'js/jquery.timeago.js' );
 
-			echo $before_widget; 
+			echo $before_widget;
 			echo "<div id='about-this-widget'>";
-			if ( $title ) echo $before_title . $title . $after_title; 
-			
+			if ( $title ) echo $before_title . $title . $after_title;
+
 			$tzone = get_option('timezone_string');
 			$date_format = get_option('date_format');
 			if ( $tzone ) date_default_timezone_set($tzone);
@@ -96,10 +96,10 @@ class htAboutThisPage extends WP_Widget {
 			if ($show_author=='on'){
 				global $post;
 				$user = get_userdata($post->post_author);
-				$displayname = get_user_meta($post->post_author ,'first_name',true )." ".get_user_meta($post->post_author ,'last_name',true );	
-				$profile_url = gi_get_user_url($post->post_author); 
+				$displayname = get_user_meta($post->post_author ,'first_name',true )." ".get_user_meta($post->post_author ,'last_name',true );
+				$profile_url = gi_get_user_url($post->post_author);
 				$authorlink = "<a href='" . $profile_url . "'>";
-				echo $authorlink; 
+				echo $authorlink;
 				$directorystyle = get_option('options_staff_directory_style'); // 0 = squares, 1 = circles
 				$avstyle = "";
 				if ( $directorystyle==1 ) $avstyle = " img-circle";
@@ -114,8 +114,8 @@ class htAboutThisPage extends WP_Widget {
 			}
 
 			echo "</div>";
-			echo $after_widget; 
-		}						
+			echo $after_widget;
+		}
 
     }
 
@@ -135,22 +135,22 @@ class htAboutThisPage extends WP_Widget {
         $show_author = esc_attr($instance['show_author']);
         ?>
 		<p>
-		<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:','govintranet'); ?></label> 
+		<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:','govintranet'); ?></label>
 		<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
-		
+
 		<label><?php _e('Include','govintranet');?>:</label><br>
-		
+
 		<input id="<?php echo $this->get_field_id('show_modified_date'); ?>" name="<?php echo $this->get_field_name('show_modified_date'); ?>" type="checkbox" <?php checked((bool) $instance['show_modified_date'], true ); ?> />
 		<label for="<?php echo $this->get_field_id('show_modified_date'); ?>"><?php _e('Modified date','govintranet'); ?></label> <br>
-		
+
 		<input id="<?php echo $this->get_field_id('show_published_date'); ?>" name="<?php echo $this->get_field_name('show_published_date'); ?>" type="checkbox" <?php checked((bool) $instance['show_published_date'], true ); ?> />
 		<label for="<?php echo $this->get_field_id('show_published_date'); ?>"><?php _e('Published date','govintranet'); ?></label> <br>
-		
+
 		<input id="<?php echo $this->get_field_id('show_author'); ?>" name="<?php echo $this->get_field_name('show_author'); ?>" type="checkbox" <?php checked((bool) $instance['show_author'], true ); ?> />
 		<label for="<?php echo $this->get_field_id('show_author'); ?>"><?php _e('Author','govintranet'); ?></label> <br>
-		
+
 		</p>
-        <?php 
+        <?php
     }
 
 }

@@ -443,8 +443,8 @@ class GoogleOauthService extends GoogleOauth {
 	 * Constructor
 	 *
 	 * @access public
-	 * @param string $clientId (default: '') Client-ID of your project from the Google APIs console
-	 * @param string $email (default: '') E-Mail address of your project from the Google APIs console
+	 * @param string $clientId (default: '') Client-ID of your casestudy from the Google APIs console
+	 * @param string $email (default: '') E-Mail address of your casestudy from the Google APIs console
 	 * @param mixed $privateKey (default: null) Path to your private key file (*.p12)
 	 */
 	public function __construct($clientId='', $email='', $privateKey=null) {

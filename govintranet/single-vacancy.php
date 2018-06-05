@@ -15,7 +15,7 @@ $singletask = false;
 $pagetype = "";
 $current_vac = $id;
 ?>
-	
+
 		<div class="col-lg-8 col-md-7 col-sm-7 white ">
 			<div class="row">
 				<div class='breadcrumbs'>
@@ -27,7 +27,7 @@ $current_vac = $id;
 			<article class="clearfix">
 			<h1><?php the_title();?></h1>
 			<div class='well'>
-			<h3><?php _e('Job details' , 'govintranet') ; ?></h3> 
+			<h3><?php _e('Job details' , 'govintranet') ; ?></h3>
 			<?php
 
 			$job_reference = get_post_meta($current_vac, 'vacancy_reference', true);
@@ -48,32 +48,32 @@ $current_vac = $id;
 					$gradearray[] =  $g->name;
 				}
 				$grade = implode(", ", $gradearray);
-			endif; 
+			endif;
 
 			$closing_date = get_post_meta($current_vac, 'vacancy_closing_date', true);
 			$closing_time = get_post_meta($current_vac, 'vacancy_closing_time', true);
 			if ($closing_date) $closing_date = date(get_option('date_format'), strtotime($closing_date))." ".date(get_option('time_format'), strtotime($closing_time));
 
-			$projects = get_post_meta($current_vac, 'vacancy_project', true);
+			$casestudies = get_post_meta($current_vac, 'vacancy_casestudy', true);
 
 			$current_attachments = get_post_meta($current_vac, 'document_attachments', true);
-			
+
 			if ( $job_reference ) echo "<strong>" . __('Job reference' , 'govintranet') . ": </strong>".esc_attr($job_reference)."<br>";
 			if ( $team ) echo "<strong>" . __('Team' , 'govintranet') . ": </strong>".$team."<br>";
-			if ( $grade ) echo "<strong>" . __('Grade' , 'govintranet') . ": </strong>".$grade."<br>";			
+			if ( $grade ) echo "<strong>" . __('Grade' , 'govintranet') . ": </strong>".$grade."<br>";
 			if ( $closing_date ) echo "<strong>" . __('Closing date' , 'govintranet') . ": </strong>".$closing_date;
 
 			$sdate=date('Y-m-d');;
 			if ( date('l j F, Y', strtotime($closing_date)) == date('l j F, Y', strtotime($sdate ) ) ){
 				echo " (" . __("That's today!" , "govintranet") . ")";
-			}		
+			}
 
 			echo "</div>";
-			the_content(); 		
-						
-			if ($projects){
-				echo "<div id='projects'><h2>" . _x('Project' , 'noun' , 'govintranet') . "</h2><ul>";
-				foreach ((array)$projects as $t){
+			the_content();
+
+			if ($casestudies){
+				echo "<div id='casestudies'><h2>" . _x('casestudy' , 'noun' , 'govintranet') . "</h2><ul>";
+				foreach ((array)$casestudies as $t){
 					if (get_post_status($t) == 'publish' ){
 						echo "<li><a href='".get_permalink($t)."'>".get_the_title($t)."</a></li>";
 					}
@@ -82,22 +82,22 @@ $current_vac = $id;
 			}
 			?>
 			</article>
-			<?php get_template_part("part", "downloads"); ?>			
+			<?php get_template_part("part", "downloads"); ?>
 			<?php
 			if ('open' == $post->comment_status) {
-				 comments_template( '', true ); 
+				 comments_template( '', true );
 			}
-			
+
 			 ?>
-			
+
 		</div> <!--end of first column-->
-		
-		<div class="col-lg-4 col-md-5 col-sm-6" id="sidebar">	
+
+		<div class="col-lg-4 col-md-5 col-sm-6" id="sidebar">
 			<h2 class="sr-only">Sidebar</h2>
 			<?php
 
 			get_template_part("part", "sidebar");
-						
+
 			get_template_part("part", "related");
 			wp_reset_postdata();
 			$post_cat = get_the_category();
@@ -112,24 +112,24 @@ $current_vac = $id;
 			$posttags = '';
 			if ( isset( $parent_guide ) ) $posttags = get_the_tags($parent_guide);
 			if ($posttags) {
-				$foundtags=false;	
+				$foundtags=false;
 				$tagstr="";
 			  	foreach($posttags as $tag) {
 		  			$foundtags=true;
 		  			$tagurl = $tag->term_id;
-			    	$tagstr=$tagstr."<span><a class='label label-default' href='".get_tag_link($tagurl)."/?type=vacancy'>" . str_replace(' ', '&nbsp' , $tag->name) . '</a></span> '; 
+			    	$tagstr=$tagstr."<span><a class='label label-default' href='".get_tag_link($tagurl)."/?type=vacancy'>" . str_replace(' ', '&nbsp' , $tag->name) . '</a></span> ';
 			  	}
 			  	if ($foundtags){
-				  	echo "<div class='widget-box'><h3>" . __('Tags' , 'govintranet') . "</h3><p> "; 
+				  	echo "<div class='widget-box'><h3>" . __('Tags' , 'govintranet') . "</h3><p> ";
 				  	echo $tagstr;
 				  	echo "</p></div>";
 			  	}
 			}
 
-			?>						
+			?>
 
 			</div>
-			
+
 <?php endwhile; // end of the loop. ?>
 
 <?php get_footer(); ?>

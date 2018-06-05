@@ -78,12 +78,12 @@ function govintranet_setup() {
 
 	// This theme uses post thumbnails
 	add_theme_support( 'post-thumbnails' );
-	
-	// add post format support 
+
+	// add post format support
 	add_theme_support( 'post-formats', array( 'status', 'link', 'gallery', 'image', 'video', 'audio' ) );
 	add_post_type_support( 'news', 'post-formats' );
 	add_post_type_support( 'task', 'post-formats' );
-	
+
 	// This remove this the issue of not being able to preview changes post types which support post-formats
 	function post_format_parameter($url) {
 		$url = remove_query_arg('post_format',$url);
@@ -106,7 +106,7 @@ function govintranet_setup() {
 
 	// theme options functions:
 	require_once ( get_template_directory() . '/theme-options.php'  );
-	
+
 	add_theme_support('custom-background');
 	add_theme_support('custom-header');
 	add_theme_support('customize-selective-refresh-widgets');
@@ -117,10 +117,10 @@ function govintranet_setup() {
 
 /****************************************
 	VERSION AND DATABASE CHECK
-****************************************/	
+****************************************/
 
 function govintranet_version_check() {
-	
+
 	//if ( get_transient("govintranet_update_check") ) return;
 	//set_transient("govintranet_update_check", "nextdue", 60 * 60 * 12);
 	$my_theme = wp_get_theme();
@@ -132,7 +132,7 @@ function govintranet_version_check() {
 		$database_version = "1.0";
 	endif;
 	$update_required = version_compare( $database_version, $theme_version, '<' );
-	
+
 	if ( $update_required ):
 		require get_parent_theme_file_path( '/inc/theme-update.php' );
 	endif;
@@ -194,7 +194,7 @@ function govintranet_filter_wp_title( $title, $separator ) {
 	}
 
 	// Otherwise, let's start by adding the site name to the end:
-	
+
 	if ( is_front_page() ){
 		$title .= get_bloginfo( 'name', 'display' );
 	}
@@ -215,13 +215,13 @@ function govintranet_filter_wp_title( $title, $separator ) {
 			$taskparent=$post->post_parent;
 			$title_context='';
 			if ($taskparent){
-				$parent_guide_id = $taskparent; 		
+				$parent_guide_id = $taskparent;
 				$taskparent = get_post($parent_guide_id);
 				$title_context=" (".get_the_title( $taskparent->ID ).")";
-			}			
+			}
 			$title .= $title_context. " - " . __('tasks and guides','govintranet')  ;
-		} elseif ($post->post_type == "project"  ) {
-			$title .= " - " . __('project','govintranet') ;
+		} elseif ($post->post_type == "casestudy"  ) {
+			$title .= " - " . __('casestudy','govintranet') ;
 		} elseif ($post->post_type == "vacancy"  ) {
 			$title .= " - " . __('job vacancies','govintranet') ;
 		} elseif ($post->post_type == "event"  ) {
@@ -241,7 +241,7 @@ function govintranet_filter_wp_title( $title, $separator ) {
 		} elseif ($post->post_type == "blog"  ) {
 			$title .= " - " . __('blog post','govintranet') ;
 		}
-	} 
+	}
 	if ( function_exists("bbp_is_single_user") ) {
 		if ( bbp_is_single_user() ) {
 			if ( !bbp_is_user_home() ){
@@ -271,7 +271,7 @@ add_filter('body_class', 'govintranet_body_classes', 10, 1);
 
 function govintranet_body_classes($classes) {
 
-	$parentpageclass = (renderLeftNav("FALSE")) ? "parentpage" : "notparentpage"; 
+	$parentpageclass = (renderLeftNav("FALSE")) ? "parentpage" : "notparentpage";
 	if ( function_exists('bbp_is_user_home') && bbp_is_user_home() ) $parentpageclass.=" bbp-my-profile";
     $classes[] = $parentpageclass;
     return $classes;
@@ -300,7 +300,7 @@ function govintranet_excerpt_length( $length ) {
 add_filter( 'excerpt_length', 'govintranet_excerpt_length' );
 
 /**
- * Replaces "[...]" (appended to automatically generated excerpts) with an ellipsis 
+ * Replaces "[...]" (appended to automatically generated excerpts) with an ellipsis
  */
 function govintranet_auto_excerpt_more( $more ) {
 	return ' &hellip;';
@@ -326,7 +326,7 @@ function govintranet_comment( $comment, $args, $depth ) {
 	<li <?php comment_class('well'); ?> id="li-comment-<?php comment_ID(); ?>">
 		<div id="comment-<?php comment_ID(); ?>">
 		<div class="comment-author vcard">
-			<?php 
+			<?php
 			$directory = 	get_option('options_forum_support');
 			$staffdirectory = get_option('options_module_staff_directory');
 			if ( $directory ){
@@ -337,7 +337,7 @@ function govintranet_comment( $comment, $args, $depth ) {
 				}
 				$image_url = get_avatar($comment , 66);
 				$image_url = str_replace(" photo", " photo alignleft".$avstyle, $image_url);
-				$userurl = get_author_posts_url( $comment->user_id );  
+				$userurl = get_author_posts_url( $comment->user_id );
 				if ( $userurl == site_url("author/") ) {
 					$userurl = "";
 				}
@@ -347,7 +347,7 @@ function govintranet_comment( $comment, $args, $depth ) {
 					$userurl=str_replace('/author', '/staff', $userurl); }
 				elseif (function_exists('bbp_get_displayed_user_field')  ){ // if using bbPress - link to the staff page
 					$userurl=str_replace('/author', '/users', $userurl);
-				} 
+				}
 				$userdisplay = "";
 				$user_object = get_userdata( $comment->user_id );
 				if ( $user_object ) $userdisplay = $user_object->display_name;
@@ -505,7 +505,7 @@ function govintranet_widgets_init() {
 		'after_widget' => '</div>',
 		'before_title' => '<h3 class="widget-title">',
 		'after_title' => '</h3>',
-	) );	
+	) );
 	if ( get_option("options_module_news") ) register_sidebar( array(
 		'name' => __( 'News sidebar', 'govintranet' ),
 		'id' => 'news-widget-area',
@@ -569,7 +569,7 @@ function govintranet_widgets_init() {
 		'before_title' => '',
 		'after_title' => '',
 	) );
-	
+
 }
 
 /** Register sidebars by running govintranet_widgets_init() on the widgets_init hook. */
@@ -601,15 +601,15 @@ add_action( 'widgets_init', 'govintranet_remove_recent_comments_style' );
 // check jQuery is available
 
 function enqueueThemeScripts() {
-	
-	wp_enqueue_style( 'govintranet-css', get_stylesheet_uri() );	
+
+	wp_enqueue_style( 'govintranet-css', get_stylesheet_uri() );
 	wp_register_style( 'dashicons', includes_url("/css/dashicons.min.css"));
 	wp_enqueue_style( 'dashicons' );
 
 	if ( 'Open Sans' == get_option('options_gi_base_font') ){
 		wp_enqueue_style( 'ht-font', "//fonts.googleapis.com/css?family=Open+Sans:300,400,700",'','screen');
 	}
-	
+
 	wp_enqueue_script( 'jquery' );
 	wp_enqueue_script( 'jquery-ui-core' );
 	wp_enqueue_script( 'jquery-effects-core' );
@@ -634,7 +634,7 @@ add_filter( 'get_the_excerpt', 'govintranetpress_custom_excerpt_more', 20 );
 /***
 
 Remove ability for editors and below to manage taxonomies
-	
+
 */
 function govintranetpress_setup_roles(){
 	if ( get_option('options_restrict_category_authors', 0) ){
@@ -655,10 +655,10 @@ function add_mtc_post_types( $types )
     $types[] = 'blog';
     $types[] = 'task';
     $types[] = 'team';
-    $types[] = 'project';
+    $types[] = 'casestudy';
     $types[] = 'event';
     $types[] = 'vacancy';
-    
+
     return $types;
 }
 add_filter( 'rd2_mtc_post_types', 'add_mtc_post_types' );
@@ -670,16 +670,16 @@ function get_post_thumbnail_caption() {
 
 /* Register callback function for post_thumbnail_html filter hook */
 add_filter( 'post_thumbnail_html', 'govintranet_post_thumbnail_alt_change', 10, 5 );
- 
+
 /* Function to replace blank alt attribute on featured images */
 function govintranet_post_thumbnail_alt_change( $html, $post_id, $post_thumbnail_id, $size, $attr ) {
 
 	$post_title = get_post_meta( $post_thumbnail_id, '_wp_attachment_image_alt', true);
 	if ( !$post_title ) $post_title = get_the_title();
 	$html = preg_replace( '/(alt=")(.*?)(")/i', '$1'.esc_attr( $post_title ).'$3', $html );
- 
+
 	return $html;
- 
+
 }
 
 // shorten cache lifetime for blog aggregators to keep it fresh
@@ -696,10 +696,10 @@ function renderLeftNav($outputcontent="TRUE") {
 		$currentpost = get_post($mainid);
 		$currenttitle = get_the_title();
 		$subnavString = '';
-					
+
 		while (true){
 			//iteratively get the post's parent until we reach the top of the hierarchy
-			$post_parent = $currentpost->post_parent; 
+			$post_parent = $currentpost->post_parent;
 			if ($post_parent!=0){	//if found a parent
 				$navarray[] = $post_parent;
 				$currentpost = get_post($post_parent);
@@ -707,61 +707,61 @@ function renderLeftNav($outputcontent="TRUE") {
 			}
 			break; //we're done with the parents
 		};
-		
+
 		$navarray = array_reverse($navarray);
-		
+
 		foreach ($navarray as $nav){ //loop through nav array outputting menu options as appropriate (parent, current or child)
 			$currentpost = get_post($nav);
 			$subnavString .= "<li class='page_item menu-item-ancestor'>"; //parent page
 			$subnavString .=  "<a href='".get_permalink($currentpost->ID)."'>".get_the_title($currentpost->ID)."</a></li>";
 		}
-										
+
 		if (!is_search() ) {
-		
+
 			$output = "
 				<div id='sectionnav'>
 				<ul>
 				{$subnavString}";
 			if (pageHasChildren($mainid)){
 			$subpages = wp_list_pages("echo=0&title_li=&depth=3&child_of=". $mainid);
-				$output .="	
+				$output .="
 					<li class='current_page_item'><a href='#'>{$currenttitle}</a></li>
 					<ul class='submenu'>{$subpages}</ul>";
 			} else {
 			$subpages = wp_list_pages("echo=0&title_li=&depth=3&child_of=". $parent);
-				$output .="	
+				$output .="
 					<ul class='submenu'>{$subpages}</ul>";
 			}
-			$output .="	
+			$output .="
 				</ul>
-				</div>	
+				</div>
 			";
-	
-			if ($outputcontent == "TRUE") { 
-				echo $output; 
+
+			if ($outputcontent == "TRUE") {
+				echo $output;
 			} else {
 				return true;
 			}
-			
+
 		} else {
 			$output = "
 				<div id='spacernav'>
-				</div>	
+				</div>
 			";
-	
-			if ($outputcontent == "TRUE") { 
-				echo $output; 
+
+			if ($outputcontent == "TRUE") {
+				echo $output;
 			} else {
 				return false;
 			}
-			
-		}			
+
+		}
 
 }
 function pageHasChildren($id="") {
 	global $post;
 	if ($id) {
-		$children = get_pages('child_of='.$id);	
+		$children = get_pages('child_of='.$id);
 	} else {
 		$children = get_pages('child_of='.$post->ID);
 	}
@@ -789,14 +789,14 @@ function my_custom_login_logo() {
 	$loginimage =  wp_get_attachment_image_src( $hcitem, 'large' );
 	if ($hcitem){
     echo '<style type="text/css">
-           h1 a { background-image:url('.$loginimage[0].') !important; 
+           h1 a { background-image:url('.$loginimage[0].') !important;
            width: auto !important;
            background-size: auto !important;
            }
     </style>';
     } else {
     echo '<style type="text/css">
-	h1 a { background-image:url('.get_template_directory_uri().'/images/loginbranding.png) !important; 
+	h1 a { background-image:url('.get_template_directory_uri().'/images/loginbranding.png) !important;
 	       width: auto !important;
            background-size: auto !important;
            }
@@ -910,22 +910,22 @@ function get_terms_by_media_type( $taxonomies, $post_types ) {
 if ( !current_user_can('delete_posts') ){
 	add_action( 'admin_menu', 'my_remove_menu_pages' );
 	if ( ! function_exists('bp_core_get_userlink') ) {
-		add_filter('show_admin_bar', '__return_false'); 
+		add_filter('show_admin_bar', '__return_false');
 	}
 	function my_remove_menu_pages() {
-	    remove_menu_page('edit.php?post_type=incsub_wiki');  
-	    remove_menu_page('video-user-manuals/plugin.php');  
-	    remove_menu_page('edit.php?post_type=task');  
-	    remove_menu_page('edit.php?post_type=project');  
-	    remove_menu_page('edit.php?post_type=news');  
-		remove_menu_page('edit.php?post_type=news-update');  
-	    remove_menu_page('edit.php?post_type=blog');  
-	    remove_menu_page('edit.php?post_type=event');  
-	    remove_menu_page('edit.php?post_type=vacancy');  
-	    remove_menu_page('edit.php?post_type=intravert');  
-	    remove_menu_page('edit.php?post_type=jargon-buster');  
-		remove_menu_page('edit.php?post_type=team');  	    
-	    remove_menu_page('index.php');  
+	    remove_menu_page('edit.php?post_type=incsub_wiki');
+	    remove_menu_page('video-user-manuals/plugin.php');
+	    remove_menu_page('edit.php?post_type=task');
+	    remove_menu_page('edit.php?post_type=casestudy');
+	    remove_menu_page('edit.php?post_type=news');
+		remove_menu_page('edit.php?post_type=news-update');
+	    remove_menu_page('edit.php?post_type=blog');
+	    remove_menu_page('edit.php?post_type=event');
+	    remove_menu_page('edit.php?post_type=vacancy');
+	    remove_menu_page('edit.php?post_type=intravert');
+	    remove_menu_page('edit.php?post_type=jargon-buster');
+		remove_menu_page('edit.php?post_type=team');
+	    remove_menu_page('index.php');
 	}
 }
 
@@ -952,7 +952,7 @@ function your_relevanssi_remove_punct($a) {
 	$a = str_replace("—", ' ', $a);
 	$a = str_replace("–", ' ', $a);
 	$a = str_replace("×", ' ', $a);
-    $a = preg_replace('/[[:space:]]+/', ' ', $a);	
+    $a = preg_replace('/[[:space:]]+/', ' ', $a);
 	$a = trim($a);
         return $a;
 }
@@ -964,11 +964,11 @@ function ht_exclude_user_search($hits){
 		$hcount=-1;
 		$recs=array();
 		$newrecs = $hits;
-		foreach ($hits[0] as $h){ 
+		foreach ($hits[0] as $h){
 			$hcount++;
 			if ($h->post_type!='user'):
 				array_push($recs, $h);
-			endif;	
+			endif;
 		}
 		return array($recs);
 	 } elseif ( isset( $_GET['include'] ) && $_GET['include']=='user' && !isset( $_GET['post_types'] ) ){
@@ -976,13 +976,13 @@ function ht_exclude_user_search($hits){
 		$hcount=-1;
 		$recs=array();
 		$newrecs = $hits;
-		foreach ($hits[0] as $h){ 
+		foreach ($hits[0] as $h){
 			$hcount++;
 			if ($h->post_type=='user'){
 				if ( !get_user_meta($h->ID, 'user_hide', true ) ){
 					array_push($recs, $h);
 				}
-			}	
+			}
 		}
 		return array($recs);
 	} else {
@@ -990,7 +990,7 @@ function ht_exclude_user_search($hits){
 		$hcount=-1;
 		$recs=array();
 		$newrecs = $hits;
-		foreach ($hits[0] as $h){ 
+		foreach ($hits[0] as $h){
 			$hcount++;
 			if ($h->post_type=='user'){
 				if ( !get_user_meta($h->ID, 'user_hide', true ) ){
@@ -1000,7 +1000,7 @@ function ht_exclude_user_search($hits){
 				array_push($recs, $h);
 			}
 		}
-		return array($recs);		
+		return array($recs);
 	}
 }
 
@@ -1016,7 +1016,7 @@ function saveampersands_1($a) {
     $a = str_replace('&', 'AMPERSAND', $a);
     return $a;
 }
- 
+
 add_filter('relevanssi_remove_punctuation', 'saveampersands_2', 11);
 function saveampersands_2($a) {
     $a = str_replace('AMPERSAND', '&', $a);
@@ -1050,7 +1050,7 @@ add_filter('the_content', 'add_secure_video_options', 10);
 
 /**
  * Register additional oEmbed providers
- * 
+ *
  * @author Syed Balkhi
  * @link http://goo.gl/tccJh
  */
@@ -1102,14 +1102,14 @@ if ( get_option( 'options_module_blog' ) ){
 		  'not_found_in_trash' => __('No Blog posts found in trash','govintranet'),
 		  'parent' => __('Parent Blog post','govintranet'),
 		  )
-		) 
-		); 
+		)
+		);
 
 		$labels = array(
 			"name" => "Blog categories",
 			"label" => "Blog categories",
 			);
-	
+
 		$args = array(
 			"labels" => $labels,
 			"hierarchical" => true,
@@ -1123,7 +1123,7 @@ if ( get_option( 'options_module_blog' ) ){
 		register_taxonomy( "blog-category", array( "blog" ), $args );
 	}
 }
-	
+
 if ( get_option( 'options_module_events' ) ) {
 	add_action('init', 'cptui_register_my_cpt_event');
 	function cptui_register_my_cpt_event() {
@@ -1159,8 +1159,8 @@ if ( get_option( 'options_module_events' ) ) {
 		  'not_found_in_trash' => __('No Events found in trash','govintranet'),
 		  'parent' => __('Parent Event','govintranet'),
 		  )
-		) 
-		); 
+		)
+		);
 	}
 }
 
@@ -1198,9 +1198,9 @@ if ( get_option( 'options_module_jargon_buster' ) ) {
 		  'not_found_in_trash' => __('No Jargon busters found in trash','govintranet'),
 		  'parent' => __('Parent Jargon buster','govintranet'),
 		  )
-		) 
-		); 
-	}	
+		)
+		);
+	}
 }
 
 if ( get_option( 'options_module_news' ) ) {
@@ -1238,8 +1238,8 @@ if ( get_option( 'options_module_news' ) ) {
 		  'not_found_in_trash' => __('No News found in trash','govintranet'),
 		  'parent' => __('Parent News','govintranet'),
 		  )
-		) 
-		); 
+		)
+		);
 	}
 }
 
@@ -1259,7 +1259,7 @@ if ( get_option( 'options_module_news_updates' ) ) {
 			'not_found_in_trash' => __('No news updates found in trash','govintranet'),
 			'parent' => __('Parent news update','govintranet'),
 		);
-	
+
 		$args = array(
 			"labels" => $labels,
 			"description" => "",
@@ -1273,13 +1273,13 @@ if ( get_option( 'options_module_news_updates' ) ) {
 			"hierarchical" => false,
 			"rewrite" => array( "slug" => "news-update", "with_front" => true ),
 			"query_var" => true,
-			"menu_position" => '35',		
-			"menu_icon" => "dashicons-flag",		
-			"supports" => array( "title", "editor", "excerpt", "comments", "revisions", "thumbnail", "author" ),			
+			"menu_position" => '35',
+			"menu_icon" => "dashicons-flag",
+			"supports" => array( "title", "editor", "excerpt", "comments", "revisions", "thumbnail", "author" ),
 			"taxonomies" => array( "post_tag" ),
 		);
 		register_post_type( "news-update", $args );
-			
+
 		if( function_exists('acf_add_local_field_group') ) acf_add_local_field_group(array (
 			'key' => 'group_558c8b74375a2',
 			'title' => __('Options','govintranet'),
@@ -1322,7 +1322,7 @@ if ( get_option( 'options_module_news_updates' ) ) {
 			'instruction_placement' => 'label',
 			'hide_on_screen' => '',
 		));
-	
+
 		if( function_exists('acf_add_local_field_group') ) {
 			acf_add_local_field_group(array (
 				'key' => 'group_558c8496b8b94',
@@ -1472,7 +1472,7 @@ if ( get_option( 'options_module_news_updates' ) ) {
 						'load_terms' => 0,
 						'return_format' => 'id',
 						'multiple' => 0,
-					),				
+					),
 				),
 				'location' => array (
 					array (
@@ -1494,11 +1494,11 @@ if ( get_option( 'options_module_news_updates' ) ) {
 	}
 }
 
-if ( get_option( 'options_module_projects' ) ) {
-	add_action('init', 'cptui_register_my_cpt_project');
-	function cptui_register_my_cpt_project() {
-		register_post_type('project', array(
-		'label' => _x('Projects','noun','govintranet'),
+if ( get_option( 'options_module_casestudies' ) ) {
+	add_action('init', 'cptui_register_my_cpt_casestudy');
+	function cptui_register_my_cpt_casestudy() {
+		register_post_type('casestudy', array(
+		'label' => _x('Case Studies','noun','govintranet'),
 		'description' => '',
 		'public' => true,
 		'show_ui' => true,
@@ -1506,7 +1506,7 @@ if ( get_option( 'options_module_projects' ) ) {
 		'capability_type' => 'post',
 		'map_meta_cap' => true,
 		'hierarchical' => true,
-		'rewrite' => array('slug' => 'project', 'with_front' => true),
+		'rewrite' => array('slug' => 'casestudy', 'with_front' => true),
 		'query_var' => true,
 		'has_archive' => true,
 		'menu_position' => '36',
@@ -1514,23 +1514,23 @@ if ( get_option( 'options_module_projects' ) ) {
 		'supports' => array('title','editor','excerpt','comments','revisions','thumbnail','author','page-attributes'),
 		'taxonomies' => array('post_tag'),
 		'labels' => array (
-		  'name' => _x('Projects','noun','govintranet'),
-		  'singular_name' => _x('Projects','noun','govintranet'),
-		  'menu_name' => _x('Projects','noun','govintranet'),
-		  'add_new' => __('Add Project','govintranet'),
-		  'add_new_item' => __('Add New Project','govintranet'),
+		  'name' => _x('Case Studies','noun','govintranet'),
+		  'singular_name' => _x('Case Study','noun','govintranet'),
+		  'menu_name' => _x('Case Studies','noun','govintranet'),
+		  'add_new' => __('Add Case Study','govintranet'),
+		  'add_new_item' => __('Add New Case Study','govintranet'),
 		  'edit' => __('Edit','govintranet'),
-		  'edit_item' => __('Edit Project','govintranet'),
-		  'new_item' => __('New Project','govintranet'),
-		  'view' => __('View Project','govintranet'),
-		  'view_item' => __('View Project','govintranet'),
-		  'search_items' => __('Search Projects','govintranet'),
-		  'not_found' => __('No Projects found','govintranet'),
-		  'not_found_in_trash' => __('No Projects found in trash','govintranet'),
-		  'parent' => __('Parent Project','govintranet'),
+		  'edit_item' => __('Edit Case Study','govintranet'),
+		  'new_item' => __('New Case Study','govintranet'),
+		  'view' => __('View Case Study','govintranet'),
+		  'view_item' => __('View Case Study','govintranet'),
+		  'search_items' => __('Search Case Studies','govintranet'),
+		  'not_found' => __('No Case Studies found','govintranet'),
+		  'not_found_in_trash' => __('No Case Studies found in trash','govintranet'),
+		  'parent' => __('Parent Case Study','govintranet'),
 		  )
-		) 
-		); 
+		)
+		);
 	}
 }
 
@@ -1569,8 +1569,8 @@ if ( get_option( 'options_module_tasks' ) ) {
 		  'not_found_in_trash' => __('No Tasks found in trash','govintranet'),
 		  'parent' => __('Parent Task','govintranet'),
 		  )
-		) 
-		); 
+		)
+		);
 		if ( get_option( 'options_module_tasks_manuals' ) ):
 			if( function_exists('acf_add_local_field_group') ) acf_add_local_field_group(array (
 				'key' => 'group_56a40dcab6d85',
@@ -1721,8 +1721,8 @@ if ( get_option( 'options_module_teams' ) ) {
 		  'not_found_in_trash' =>__( 'No Teams found in trash','govintranet'),
 		  'parent' => __('Parent Team','govintranet'),
 		  )
-		) 
-		); 
+		)
+		);
 	}
 }
 
@@ -1761,8 +1761,8 @@ if ( get_option( 'options_module_vacancies' ) ) {
 		  'not_found_in_trash' => __('No Vacancies found in trash','govintranet'),
 		  'parent' => __('Parent Vacancy','govintranet'),
 		  )
-		) 
-		); 
+		)
+		);
 	}
 }
 
@@ -1792,9 +1792,9 @@ if ( get_option( 'options_module_news' ) ) {
 			  'add_or_remove_items' => __('Add or remove a type','govintranet'),
 			  'choose_from_most_used' => __('Most used','govintranet'),
 			  ),
-	 		'update_count_callback' => 'ht_update_post_term_count' 
-		) 
-		); 
+	 		'update_count_callback' => 'ht_update_post_term_count'
+		)
+		);
 		if( function_exists('acf_add_local_field_group') ):
 			acf_add_local_field_group(array (
 				'key' => 'group_572b7ab61d0ab',
@@ -1863,7 +1863,7 @@ if ( get_option( 'options_module_news' ) ) {
 				'active' => 1,
 				'description' => '',
 			));
-		
+
 		endif;
 	}
 }
@@ -1874,7 +1874,7 @@ if ( get_option( 'options_module_news_updates' ) ) {
 		$labels = array(
 			"label" => __("News update type",'govintranet'),
 				);
-	
+
 		$args = array(
 			"labels" => $labels,
 			"hierarchical" => true,
@@ -1884,7 +1884,7 @@ if ( get_option( 'options_module_news_updates' ) ) {
 			"rewrite" => array( 'slug' => 'news-update-type', 'with_front' => true ),
 			"show_admin_column" => true,
 			'show_in_quick_edit' => true,
-			'update_count_callback' => 'ht_update_post_term_count' 
+			'update_count_callback' => 'ht_update_post_term_count'
 		);
 		register_taxonomy( "news-update-type", array( "news-update" ), $args );
 	}
@@ -1917,11 +1917,11 @@ if ( get_option( 'options_module_vacancies' ) || get_option ( 'options_module_st
 			  'add_or_remove_items' => __('Add or remove a grade','govintranet'),
 			  'choose_from_most_used' => __('Most used','govintranet'),
 			  ),
-			'update_count_callback' => 'ht_update_post_term_count' 	  
-		) 
-		); 
+			'update_count_callback' => 'ht_update_post_term_count'
+		)
+		);
 	}
-} 
+}
 
 if ( !get_option( 'options_module_vacancies' ) && get_option ( 'options_module_staff_directory' ) ) {
 	// not using vacancies, so need to surface Grades taxonomy under Users
@@ -1958,9 +1958,9 @@ if ( get_option( 'options_module_events' ) ) {
 			  'add_or_remove_items' => __('Add or remove event types','govintranet'),
 			  'choose_from_most_used' => __('Most used','govintranet'),
 			  ),
-			'update_count_callback' => 'ht_update_post_term_count' 	  
-		) 
-		); 
+			'update_count_callback' => 'ht_update_post_term_count'
+		)
+		);
 	}
 }
 
@@ -1971,9 +1971,9 @@ if ( get_option( 'options_module_a_to_z' ) ) {
 		  0 => 'page',
 		  1 => 'task',
 		  2 => 'team',
-		  3 => 'project',
+		  3 => 'casestudy',
 		),
-		array( 
+		array(
 			'hierarchical' => true,
 			'label' => __('A to Z letters','govintranet'),
 			'show_ui' => true,
@@ -1994,9 +1994,9 @@ if ( get_option( 'options_module_a_to_z' ) ) {
 			'add_or_remove_items' => __('Add or remove letters','govintranet'),
 			'choose_from_most_used' => __('Most used','govintranet'),
 			),
-			'update_count_callback' => 'ht_update_post_term_count' 
-		) 
-		); 
+			'update_count_callback' => 'ht_update_post_term_count'
+		)
+		);
 	}
 }
 
@@ -2204,7 +2204,7 @@ if( function_exists('acf_add_local_field_group') ){
 					'tabs' => 'all',
 					'toolbar' => 'basic',
 					'media_upload' => 1,
-				),			
+				),
 				array(
 					'key' => 'field_5a71211e0ba0a',
 					'label' => __('Must login message','govintranet'),
@@ -2380,7 +2380,7 @@ if( function_exists('acf_add_local_field_group') ){
 						'id' => '',
 					),
 				),
-			),			
+			),
 			'location' => array (
 				array (
 					array (
@@ -2404,8 +2404,8 @@ if( function_exists('acf_add_local_field_group') ){
 			'active' => 1,
 			'description' => '',
 		));
-	
-	
+
+
 		acf_add_local_field_group(array (
 			'key' => 'group_584c750cbbb9a',
 			'title' => 'Intranet configuration Search',
@@ -2634,7 +2634,7 @@ if( function_exists('acf_add_local_field_group') ){
 					'readonly' => 0,
 					'disabled' => 0,
 				),
-			),			
+			),
 			'location' => array (
 				array (
 					array (
@@ -2658,8 +2658,8 @@ if( function_exists('acf_add_local_field_group') ){
 			'active' => 1,
 			'description' => '',
 		));
-	
-				
+
+
 		acf_add_local_field_group(array (
 			'key' => 'group_584c75c7700cb',
 			'title' => 'Intranet configuration modules',
@@ -2739,8 +2739,8 @@ if( function_exists('acf_add_local_field_group') ){
 				),
 				array (
 					'key' => 'field_536fa1b3a8af8',
-					'label' => _x('Projects','noun','govintranet'),
-					'name' => 'module_projects',
+					'label' => _x('casestudies','noun','govintranet'),
+					'name' => 'module_casestudies',
 					'ui' => 1,
 					'ui_on_text' => __('ON','govintranet'),
 					'ui_off_text' => __('OFF','govintranet'),
@@ -3111,7 +3111,7 @@ if( function_exists('acf_add_local_field_group') ){
 					),
 					'message' => '',
 					'default_value' => 0,
-				),			
+				),
 				array (
 					'key' => 'field_55cfd2dc57466',
 					'label' => __('Start with tags open','govintranet'),
@@ -3200,12 +3200,12 @@ if( function_exists('acf_add_local_field_group') ){
 					'maxlength' => '',
 					'readonly' => 0,
 					'disabled' => 0,
-				),		
+				),
 				array (
 					'placement' => 'top',
 					'endpoint' => 0,
 					'key' => 'field_584c761275d96',
-					'label' => 'Projects',
+					'label' => 'casestudies',
 					'name' => '',
 					'type' => 'tab',
 					'instructions' => '',
@@ -3227,8 +3227,8 @@ if( function_exists('acf_add_local_field_group') ){
 				),
 				array (
 					'key' => 'field_536fa1d7a8af9',
-					'label' => __('Projects page','govintranet'),
-					'name' => 'module_projects_page',
+					'label' => __('casestudies page','govintranet'),
+					'name' => 'module_casestudies_page',
 					'type' => 'relationship',
 					'instructions' => '',
 					'required' => 1,
@@ -3689,7 +3689,7 @@ if( function_exists('acf_add_local_field_group') ){
 					),
 					'message' => '',
 					'default_value' => 0,
-				),		
+				),
 				array (
 					'key' => 'field_55d628c205b5b',
 					'label' => __('Show My Profile link','govintranet'),
@@ -3744,9 +3744,9 @@ if( function_exists('acf_add_local_field_group') ){
 					'message' => '',
 					'default_value' => 0,
 				),
-	
-	
-	
+
+
+
 				array (
 					'key' => 'field_54cd5345482fc',
 					'label' => __('Staff directory page','govintranet'),
@@ -3953,7 +3953,7 @@ if( function_exists('acf_add_local_field_group') ){
 					'message' => '',
 					'default_value' => 0,
 				),
-			),	
+			),
 			'location' => array (
 				array (
 					array (
@@ -3977,8 +3977,8 @@ if( function_exists('acf_add_local_field_group') ){
 			'active' => 1,
 			'description' => '',
 		));
-	
-		if ( get_option( 'options_module_tasks' ) || get_option( 'options_module_projects' ) ) acf_add_local_field_group(array (
+
+		if ( get_option( 'options_module_tasks' ) || get_option( 'options_module_casestudies' ) ) acf_add_local_field_group(array (
 			'key' => 'group_53bd5ee04bd4d',
 			'title' => __('Category','govintranet'),
 			'fields' => array (
@@ -4035,7 +4035,7 @@ if( function_exists('acf_add_local_field_group') ){
 			'hide_on_screen' => array (
 			),
 		));
-		
+
 		if ( get_option( 'options_module_vacancies' ) || get_option( 'options_module_staff_directory' ) ) acf_add_local_field_group(array (
 			'key' => 'group_54cd1e8380c49',
 			'title' => __('Grades','govintranet'),
@@ -4074,7 +4074,7 @@ if( function_exists('acf_add_local_field_group') ){
 			'instruction_placement' => 'label',
 			'hide_on_screen' => '',
 		));
-		
+
 		if ( get_option( 'options_module_teams' ) ) acf_add_local_field_group(array (
 			'key' => 'group_54cd25add8aaa',
 			'title' => __('Teams','govintranet'),
@@ -4109,7 +4109,7 @@ if( function_exists('acf_add_local_field_group') ){
 			'instruction_placement' => 'label',
 			'hide_on_screen' => '',
 		));
-		
+
 		if ( get_option( 'options_module_events' ) ) acf_add_local_field_group(array (
 			'key' => 'group_53bd5ee05808f',
 			'title' => __('Events','govintranet'),
@@ -4259,7 +4259,7 @@ if( function_exists('acf_add_local_field_group') ){
 			'instruction_placement' => 'label',
 			'hide_on_screen' => '',
 		));
-		
+
 		acf_add_local_field_group(array (
 			'key' => 'group_53bd5ee0643f8',
 			'title' => __('External link','govintranet'),
@@ -4301,9 +4301,9 @@ if( function_exists('acf_add_local_field_group') ){
 				0 => 'the_content',
 			),
 		));
-		
+
 		$homepage = get_page_by_title( 'Home', OBJECT, 'page' );
-		if (!$homepage) $homepage = get_page_by_title( 'Homepage', OBJECT, 'page' ); 
+		if (!$homepage) $homepage = get_page_by_title( 'Homepage', OBJECT, 'page' );
 		if ($homepageid = $homepage->ID){
 			if( function_exists('acf_add_local_field_group') ) acf_add_local_field_group(array (
 				'key' => 'group_53bd5ee06e039',
@@ -4388,16 +4388,16 @@ if( function_exists('acf_add_local_field_group') ){
 				),
 			));
 		}
-	
-	
-		if ( get_option( 'options_module_projects' ) ) acf_add_local_field_group(array (
+
+
+		if ( get_option( 'options_module_casestudies' ) ) acf_add_local_field_group(array (
 			'key' => 'group_53bd5ee0dbdca',
-			'title' => _x('Projects','noun','govintranet'),
+			'title' => _x('casestudies','noun','govintranet'),
 			'fields' => array (
 				array (
 					'key' => 'field_536f674993a97',
-					'label' => __('Project overview','govintranet'),
-					'name' => 'project_overview',
+					'label' => __('casestudy overview','govintranet'),
+					'name' => 'casestudy_overview',
 					'prefix' => '',
 					'type' => 'wysiwyg',
 					'instructions' => '',
@@ -4407,52 +4407,52 @@ if( function_exists('acf_add_local_field_group') ){
 					'toolbar' => 'full',
 					'media_upload' => 1,
 				),
-				array (
-					'key' => 'field_536f675d93a98',
-					'label' => __('Project start date','govintranet'),
-					'name' => 'project_start_date',
-					'prefix' => '',
-					'type' => 'date_picker',
-					'instructions' => '',
-					'required' => 0,
-					'conditional_logic' => 0,
-					'display_format' => 'd/m/Y',
-					'return_format' => 'd/m/Y',
-					'first_day' => 1,
-				),
-				array (
-					'key' => 'field_536f677693a99',
-					'label' => __('Project end date','govintranet'),
-					'name' => 'project_end_date',
-					'prefix' => '',
-					'type' => 'date_picker',
-					'instructions' => '',
-					'required' => 0,
-					'conditional_logic' => 0,
-					'display_format' => 'd/m/Y',
-					'return_format' => 'd/m/Y',
-					'first_day' => 1,
-				),
-				array (
-					'key' => 'field_536f67c693a9b',
-					'label' => __('Team members','govintranet'),
-					'name' => 'project_team_members',
-					'prefix' => '',
-					'type' => 'user',
-					'instructions' => '',
-					'required' => 0,
-					'conditional_logic' => 0,
-					'role' => '',
-					'allow_null' => 0,
-					'multiple' => 1,
-				),
+				// array (
+				// 	'key' => 'field_536f675d93a98',
+				// 	'label' => __('casestudy start date','govintranet'),
+				// 	'name' => 'casestudy_start_date',
+				// 	'prefix' => '',
+				// 	'type' => 'date_picker',
+				// 	'instructions' => '',
+				// 	'required' => 0,
+				// 	'conditional_logic' => 0,
+				// 	'display_format' => 'd/m/Y',
+				// 	'return_format' => 'd/m/Y',
+				// 	'first_day' => 1,
+				// ),
+				// array (
+				// 	'key' => 'field_536f677693a99',
+				// 	'label' => __('casestudy end date','govintranet'),
+				// 	'name' => 'casestudy_end_date',
+				// 	'prefix' => '',
+				// 	'type' => 'date_picker',
+				// 	'instructions' => '',
+				// 	'required' => 0,
+				// 	'conditional_logic' => 0,
+				// 	'display_format' => 'd/m/Y',
+				// 	'return_format' => 'd/m/Y',
+				// 	'first_day' => 1,
+				// ),
+				// array (
+				// 	'key' => 'field_536f67c693a9b',
+				// 	'label' => __('Team members','govintranet'),
+				// 	'name' => 'casestudy_team_members',
+				// 	'prefix' => '',
+				// 	'type' => 'user',
+				// 	'instructions' => '',
+				// 	'required' => 0,
+				// 	'conditional_logic' => 0,
+				// 	'role' => '',
+				// 	'allow_null' => 0,
+				// 	'multiple' => 1,
+				// ),
 			),
 			'location' => array (
 				array (
 					array (
 						'param' => 'post_type',
 						'operator' => '==',
-						'value' => 'project',
+						'value' => 'casestudy',
 					),
 				),
 			),
@@ -4463,13 +4463,13 @@ if( function_exists('acf_add_local_field_group') ){
 			'instruction_placement' => 'label',
 			'hide_on_screen' => '',
 		));
-	
+
 		if ( get_option( 'options_forum_support' )  ){
-		
+
 			if ( get_option( 'options_forum_visual_editor' )  ){
-			
+
 				/* Strip unwanted tags from content */
-			
+
 				function bbp_enable_visual_editor( $args = array() ) {
 				    $args['tinymce'] = true;
 					$args['quicktags'] = false;
@@ -4497,17 +4497,17 @@ if( function_exists('acf_add_local_field_group') ){
 						'blockquote' => array(
 							'cite'     => true,
 						),
-						
+
 						// Div
 						'div' => array(
 							'class'     => true,
 						),
-						
+
 						// Span
 						'span'             => array(
 							'class'     => true,
 						),
-						
+
 						// Code
 						'code'       => array(),
 						'pre'        => array(
@@ -4566,15 +4566,15 @@ if( function_exists('acf_add_local_field_group') ){
 						)
 					);
 				}
-	
+
 			}
-		
+
 			if ( get_option( 'options_module_staff_directory' ) || get_option( 'options_forum_support' )  ){
-			
+
 				if( function_exists('acf_add_local_field_group') ) {
-		
+
 					acf_add_local_field_group(array (
-			
+
 						'key' => 'group_53bd5ee0ea856',
 						'title' => __('Users','govintranet'),
 						'fields' => array (
@@ -4798,13 +4798,13 @@ if( function_exists('acf_add_local_field_group') ){
 						'instruction_placement' => 'label',
 						'hide_on_screen' => '',
 					));
-				
-				
+
+
 				}
-				
-			
+
+
 				acf_add_local_field_group(array (
-	
+
 					'key' => 'group_55dd043b43161',
 					'title' => __('Admin options','govintranet'),
 					'fields' => array (
@@ -4872,7 +4872,7 @@ if( function_exists('acf_add_local_field_group') ){
 					'instruction_placement' => 'label',
 					'hide_on_screen' => '',
 				));
-		
+
 				acf_add_local_field_group(array (
 					'key' => 'group_584735019c01d',
 					'title' => __('Directory order','govintranet'),
@@ -4920,12 +4920,12 @@ if( function_exists('acf_add_local_field_group') ){
 					'active' => 1,
 					'description' => '',
 				));
-			}	
-			
+			}
+
 		}
-	
+
 		if ( get_option( 'options_module_vacancies' )  ){
-		
+
 			if( function_exists('acf_add_local_field_group') ) acf_add_local_field_group(array (
 				'key' => 'group_53bd5ee10ecdd',
 				'title' => __('Vacancies','govintranet'),
@@ -5003,8 +5003,8 @@ if( function_exists('acf_add_local_field_group') ){
 					),
 					array (
 						'key' => 'field_53b5cd3b5edeb',
-						'label' => _x('Project','noun','govintranet'),
-						'name' => 'vacancy_project',
+						'label' => _x('casestudy','noun','govintranet'),
+						'name' => 'vacancy_casestudy',
 						'prefix' => '',
 						'type' => 'relationship',
 						'instructions' => '',
@@ -5012,7 +5012,7 @@ if( function_exists('acf_add_local_field_group') ){
 						'conditional_logic' => 0,
 						'return_format' => 'object',
 						'post_type' => array (
-							0 => 'project',
+							0 => 'casestudy',
 						),
 						'taxonomy' => array (
 						),
@@ -5043,9 +5043,9 @@ if( function_exists('acf_add_local_field_group') ){
 				'instruction_placement' => 'label',
 				'hide_on_screen' => '',
 			));
-		
+
 		}
-	
+
 		acf_add_local_field_group(array (
 			'key' => 'group_54b46b388f6cb',
 			'title' => __('Media embed','govintranet'),
@@ -5081,7 +5081,7 @@ if( function_exists('acf_add_local_field_group') ){
 						'operator' => '==',
 						'value' => 'audio',
 					),
-				),				
+				),
 			),
 			'menu_order' => 0,
 			'position' => 'normal',
@@ -5090,7 +5090,7 @@ if( function_exists('acf_add_local_field_group') ){
 			'instruction_placement' => 'label',
 			'hide_on_screen' => '',
 		));
-		
+
 		if ( get_option( 'options_module_news' ) ) acf_add_local_field_group(array (
 			'key' => 'group_53bd5ee11b027',
 			'title' => __('News expiry','govintranet'),
@@ -5209,7 +5209,7 @@ if( function_exists('acf_add_local_field_group') ){
 								'operator' => '==',
 								'value' => '1',
 							),
-	
+
 						),
 					),
 					'wrapper' => array (
@@ -5225,7 +5225,7 @@ if( function_exists('acf_add_local_field_group') ){
 					'load_terms' => 0,
 					'return_format' => 'id',
 					'multiple' => 0,
-				),				
+				),
 			),
 			'location' => array (
 				array (
@@ -5243,7 +5243,7 @@ if( function_exists('acf_add_local_field_group') ){
 			'instruction_placement' => 'label',
 			'hide_on_screen' => '',
 		));
-		
+
 		acf_add_local_field_group(array (
 			'key' => 'group_53bd5ee124c55',
 			'title' => __('Attachments','govintranet'),
@@ -5321,7 +5321,7 @@ if( function_exists('acf_add_local_field_group') ){
 					array (
 						'param' => 'post_type',
 						'operator' => '==',
-						'value' => 'project',
+						'value' => 'casestudy',
 					),
 				),
 				array (
@@ -5339,7 +5339,7 @@ if( function_exists('acf_add_local_field_group') ){
 			'instruction_placement' => 'label',
 			'hide_on_screen' => '',
 		));
-		
+
 		acf_add_local_field_group(array (
 			'key' => 'group_53bd5ee129a41',
 			'title' => __('Related','govintranet'),
@@ -5360,7 +5360,7 @@ if( function_exists('acf_add_local_field_group') ){
 						2 => 'event',
 						3 => 'task',
 						4 => 'news',
-						5 => 'project',
+						5 => 'casestudy',
 					),
 					'taxonomy' => array (
 					),
@@ -5410,7 +5410,7 @@ if( function_exists('acf_add_local_field_group') ){
 					array (
 						'param' => 'post_type',
 						'operator' => '==',
-						'value' => 'project',
+						'value' => 'casestudy',
 					),
 				),
 				array (
@@ -5429,7 +5429,7 @@ if( function_exists('acf_add_local_field_group') ){
 			'hide_on_screen' => array (
 			),
 		));
-		
+
 		acf_add_local_field_group(array (
 			'key' => 'group_53bd5ee12e8a1',
 			'title' => __('Keywords','govintranet'),
@@ -5500,7 +5500,7 @@ if( function_exists('acf_add_local_field_group') ){
 					array (
 						'param' => 'post_type',
 						'operator' => '==',
-						'value' => 'project',
+						'value' => 'casestudy',
 					),
 				),
 				array (
@@ -5525,7 +5525,7 @@ if( function_exists('acf_add_local_field_group') ){
 			'instruction_placement' => 'label',
 			'hide_on_screen' => '',
 		));
-	
+
 		acf_add_local_field_group(array (
 			'key' => 'group_5522f15806b4b',
 			'title' => __('Column placeholders','govintranet'),
@@ -9301,7 +9301,7 @@ if( function_exists('acf_add_local_field_group') ){
 			'instruction_placement' => 'label',
 			'hide_on_screen' => '',
 		));
-	
+
 		if ( get_option( 'options_module_teams' ) ){
 			if( function_exists('acf_add_local_field_group') ) acf_add_local_field_group(array (
 				'key' => 'group_5522eeebca049',
@@ -9371,7 +9371,7 @@ if( function_exists('acf_add_local_field_group') ){
 				'hide_on_screen' => '',
 			));
 		}
-		
+
 		acf_add_local_field_group(array (
 			'key' => 'group_55feb1d56546e',
 			'title' => __('Sidebar','govintranet'),
@@ -9428,7 +9428,7 @@ if( function_exists('acf_add_local_field_group') ){
 					array (
 						'param' => 'post_type',
 						'operator' => '==',
-						'value' => 'project',
+						'value' => 'casestudy',
 					),
 				),
 				array (
@@ -9460,7 +9460,7 @@ if( function_exists('acf_add_local_field_group') ){
 			'instruction_placement' => 'label',
 			'hide_on_screen' => '',
 		));
-	
+
 		acf_add_local_field_group(array (
 			'key' => 'group_5696cd9ca0e42',
 			'title' => 'Layout',
@@ -9522,7 +9522,7 @@ if( function_exists('acf_add_local_field_group') ){
 			'active' => 1,
 			'description' => '',
 		));
-		
+
 		acf_add_local_field_group(array (
 			'key' => 'group_5697ff3c468a8',
 			'title' => 'Newsboard',
@@ -9937,40 +9937,40 @@ function listdocs_func( $atts ) {
 		'cat' => 'any',
 		'desc' => false
 	), $atts ) );
-	
+
 	$cat_id = $cat;
 	$doctyp = $type;
 	$taxonomies[]='category';
 	$post_type[]='attachment';
 	$post_cat = get_terms_by_media_type( $taxonomies, $post_type);
-	
+
 	if ($cat_id != "any") {
 		$catterm = get_category_by_slug($cat_id);
 		$catname = $catterm->name;
 		$catid = $catterm->term_id;
 	} else {
 		$catname = __('All categories','govintranet');
-	}	
-	
+	}
+
 	if ($doctyp != "any") {
-		$dtterm = get_term_by('slug', $doctyp, 'document-type'); 
+		$dtterm = get_term_by('slug', $doctyp, 'document-type');
 		$dtname = $dtterm->name;
 		$dtid = $dtterm->term_id;
 	} else {
 		$dtname = __('All document types','govintranet');
-	}	
-	
+	}
+
 	// get all document types for the left hand menu
 	$args = array(
-	    'orderby'       => 'name', 
+	    'orderby'       => 'name',
 	    'order'         => 'ASC',
-	    'hide_empty'    => false 
+	    'hide_empty'    => false
 	    );
 
 	$subcat = get_terms( 'document-type', $args );
 	$cathead = '';
 	if ($cat_id!='any' && $doctyp!='any'){	// cat and doc type
-	
+
 		$docs = get_posts(array(
 		'post_type'=>'attachment',
 		'orderby'=>'title',
@@ -9978,19 +9978,19 @@ function listdocs_func( $atts ) {
 	    'posts_per_page' => -1,
 	    'tax_query'=>array(
 		    'relation' => 'AND',
-			array(  
+			array(
 		    'taxonomy' => 'category',
 			'field' => 'slug',
 			'terms' => $cat_id
 			),
-			array(  
+			array(
 		    'taxonomy' => 'document-type',
 			'field' => 'term_id',
 			'terms' => $dtid
 			)
 		)
 		));
-	} 
+	}
 
 	if ($cat_id=='any' && $doctyp!='any'){	// single doc type
 		$docs = get_posts(array(
@@ -9999,7 +9999,7 @@ function listdocs_func( $atts ) {
 		'order'=>'ASC',
 	    'posts_per_page' => -1,
 	    'tax_query'=>array(
-			array(  
+			array(
 		    'taxonomy' => 'document-type',
 			'field' => 'term_id',
 			'terms' => $dtid
@@ -10011,13 +10011,13 @@ function listdocs_func( $atts ) {
 	if ($cat_id=='any' && $doctyp=='any' ){ // no filter
 		$inlist=array();
 	    foreach ( $subcat as $term ) {
-	       $inlist[] = $term->term_id; 
+	       $inlist[] = $term->term_id;
 	     }
-		$catlist=array(); 
+		$catlist=array();
 	    foreach ( $post_cat as $term ) {
-	       $catlist[] = $term->term_id; 
+	       $catlist[] = $term->term_id;
 		}
-	     
+
 		$docs = get_posts(array(
 			'post_type'=>'attachment',
 			'orderby'=>'title',
@@ -10025,7 +10025,7 @@ function listdocs_func( $atts ) {
 	        'posts_per_page' => -1,
 			'tax_query' => array(
 				'relation' => 'OR',
-			    array(  
+			    array(
 			    'taxonomy' => 'document-type',
 				'field' => 'term_id',
 				'terms' => $inlist,
@@ -10036,13 +10036,13 @@ function listdocs_func( $atts ) {
 				'terms' => $catlist,
 				)
 			)
-		));	
+		));
 	}
 
 	if ($cat_id!='any' && $doctyp=='any' ){ // single cat
 		$inlist=array();
 		foreach ( $subcat as $term ) {
-			$inlist[] = $term->term_id; 
+			$inlist[] = $term->term_id;
 		}
 		$docs = get_posts(array(
 			'post_type'=>'attachment',
@@ -10050,11 +10050,11 @@ function listdocs_func( $atts ) {
 			'order'=>'ASC',
 			'posts_per_page' => -1,
 			'tax_query'=>array(
-			array(  
+			array(
 			'taxonomy' => 'category',
 			'field' => 'slug',
 			'terms' => $cat_id)),
-		));	
+		));
 	}
 
 	$postsarray=array();
@@ -10066,12 +10066,12 @@ function listdocs_func( $atts ) {
 	if (count($docs) == 0 ) {
 		$postsarray[]='';
 	}
-	$counter = 0;	
+	$counter = 0;
 	$docs = new wp_query(array('orderby'=>'title','order'=>'ASC','post_status'=>'inherit','posts_per_page'=>-1,'post_type'=>'attachment','post__in'=>$postsarray));
-	
+
 	$html= '<ul class="docmenu">';
 	global $post;
-	if ( $docs->have_posts() ) while ( $docs->have_posts() ) : $docs->the_post(); 
+	if ( $docs->have_posts() ) while ( $docs->have_posts() ) : $docs->the_post();
 		$html.= '<li><a href="'.($post->guid).'">';
 		$html.= get_the_title($post->ID);
 		$html.= '</a>';
@@ -10083,7 +10083,7 @@ function listdocs_func( $atts ) {
 
 	$html.= '</ul>';
 	return $html;
-	
+
 }
 add_shortcode( 'listdocs', 'listdocs_func' );
 
@@ -10098,15 +10098,15 @@ function listposts_func( $atts ) {
 	$html = '';
 
 	if ( ! in_array($type, array('news','news-update','blog') ) ) return $html;
-	
+
 	$listq = array(
 		'post_type' => $type,
 		'posts_per_page' => intval($num)
 	);
-	
-	$tax ='';	
+
+	$tax ='';
 	if ( $cat ) {
-		
+
 		switch ( $type ) {
 			case 'news':
 				$tax = 'news-type';
@@ -10126,9 +10126,9 @@ function listposts_func( $atts ) {
 			'terms' => esc_sql($cat)
 		));
 	}
-	
+
 	$list = new WP_Query( $listq );
-	
+
 	if ( $list->have_posts() ) {
 		while ( $list->have_posts() ) {
 			$list->the_post();
@@ -10136,7 +10136,7 @@ function listposts_func( $atts ) {
 		}
 		return "<ul>" . $html . "</ul>";
 	}
-	
+
 }
 add_shortcode( 'listposts', 'listposts_func' );
 
@@ -10150,16 +10150,16 @@ function ht_landingpages_shortcode($atts,$content){
         ), $atts );
 
 	// get child pages
-	
+
 	global $wp_query;
 	$id = ($opts['id'] == "") ? $wp_query->post->ID : $opts['id'];
-	
+
 	$children = get_pages("child_of=".$id."&parent=".$id."&hierarchical=0&exclude=".$opts['exclude']."&post_type=page&sort_column=menu_order,post_title&sort_order=ASC");
 
 	$output = "";
 	foreach((array)$children as $c) {
-		
-		if ($opts['type']=='list'){			
+
+		if ($opts['type']=='list'){
 			$output .= "<li><a href='".get_permalink($c->ID)."'>".get_the_title($c->ID)."</a></li>";
 		} else {
 			$excerpt='';
@@ -10170,8 +10170,8 @@ function ht_landingpages_shortcode($atts,$content){
 					$excerpt = substr(strip_tags($c->post_content),0,200) . "&hellip;";
 				} elseif ($c->post_content == "" || $c->post_content == 0) {
 					$excerpt = "";
-				} else {			
-					$excerpt = strip_tags($c->post_content); 
+				} else {
+					$excerpt = strip_tags($c->post_content);
 				}
 			}
 			$output .= "
@@ -10183,7 +10183,7 @@ function ht_landingpages_shortcode($atts,$content){
 			";
 		}
 	}
-	if ($opts['type']=='list'){			
+	if ($opts['type']=='list'){
 		$html = "<ul>" . $output . "</li>";
 	} else {
 		$html = "<div class='htlandingpageblock'>" . $output . "</div>";
@@ -10198,8 +10198,8 @@ function ht_listteams_shortcode(){
 		'echo'         => 0,
 		'post_type'    => 'team',
 		'post_status'  => 'publish',
-		'title_li'     => "", 
-	);			
+		'title_li'     => "",
+	);
 	$teams = wp_list_pages( $args );
 	return "<ul class='listteams'>".$teams."</ul>";
 }
@@ -10214,27 +10214,27 @@ function ht_listtags_shortcode($atts,$content){
     $opts=shortcode_atts( array(
         'tag' => '',
         'format' => '',
-        
+
         ), $atts );
-	
+
 	global $wp_query;
 
 	$tag = $opts['tag'];
 	$format = $opts['format'];
 	$q = 'posts_per_page=-1&tag='.$tag;
 	$query = get_posts( $q );
-	
+
 	$output='';
-	foreach ($query as $list){		
+	foreach ($query as $list){
 		$thisexcerpt='';
 		$thistitle = get_the_title($list->ID);
-		$titleatt = the_title_attribute( 'echo=0', 'post='.$list->ID ); 
+		$titleatt = the_title_attribute( 'echo=0', 'post='.$list->ID );
 		$thisURL = get_permalink($list->ID);
 		$thisexcerpt = get_the_excerpt($list->ID);
 		$thisdate = $list->post_date;
 		$thisdate = date(get_option('date_format'),strtotime($thisdate));
-		$image_url = get_the_post_thumbnail($list->ID, 'medium', array("class"=>"img img-responsive","width"=>175,"height"=>175));	
-		
+		$image_url = get_the_post_thumbnail($list->ID, 'medium', array("class"=>"img img-responsive","width"=>175,"height"=>175));
+
 		$output.="
 		<div class='grid-item well well-sm'>
 			<div class='itemimage'><a href=\"".$thisURL."\" title=\"".$titleatt." ".$title_context."\">".$image_url."</a></div>
@@ -10243,10 +10243,10 @@ function ht_listtags_shortcode($atts,$content){
 					$output.="<p><span class='listglyph'><i class='glyphicon glyphicon-calendar'></i> ".$thisdate."</span> </p>".wpautop($thisexcerpt);
 				}
 		$output.="</div>";
-	
+
 	}
 		$output=
-		
+
 		'<div id="container" class="js-masonry"
   data-masonry-options=\'{ "columnWidth": ".grid-sizer", "itemSelector": ".grid-item", "gutter": 10 }\'><div class="grid-sizer"></div>'.$output."</div>";
 	wp_reset_query();
@@ -10262,16 +10262,16 @@ function ht_people_shortcode($atts){
         'team' => '',
         'num' => 3,
         ), $atts );
-	
+
 	$userid = $opts['id'];
 	$team = $opts['team'];
 	$teamid = 0;
 	$num = $opts['num'];
 	$html = '';
-	
+
 	if ( $team ) {
 		$t = get_posts( array('post_type'=>'team','post_name'=>$team,'post_status'=>'publish') );
-		if ( $t ) $teamid = $t[0]->ID; 
+		if ( $t ) $teamid = $t[0]->ID;
 	}
 
 	$directorystyle = get_option('options_staff_directory_style'); // 0 = squares, 1 = circles
@@ -10279,13 +10279,13 @@ function ht_people_shortcode($atts){
 	$fulldetails = get_option('options_full_detail_staff_cards');
 
 	if ( intval($userid) > 0 ){
-	
+
 		$context = get_user_meta($userid,'user_job_title',true);
 		if ($context=='') $context="staff";
-		$icon = "user";			
+		$icon = "user";
 		$user_info = get_userdata($userid);
 		$userurl = site_url().'/staff/'.$user_info->user_nicename;
-		$displayname = get_user_meta($userid ,'first_name',true )." ".get_user_meta($userid ,'last_name',true );		
+		$displayname = get_user_meta($userid ,'first_name',true )." ".get_user_meta($userid ,'last_name',true );
 		$avatarhtml = get_avatar($userid,66);
 		if ($directorystyle==1):
 			$avatarhtml = str_replace("photo", "photo alignleft img-circle", $avatarhtml);
@@ -10296,44 +10296,44 @@ function ht_people_shortcode($atts){
 		$counter = 0;
 		$tcounter = 0;
 		if ($fulldetails){
-				
+
 			$html.= "<div class='col-lg-6 col-md-6 col-sm-6'><div class='media well well-sm'><a href='".site_url()."/staff/".$user_info->user_nicename."/'>".$avatarhtml."</a><div class='media-body'><p><a href='".site_url()."/staff/".$user_info->user_nicename."/'><strong>".$displayname."</strong></a><br>";
-	
+
 			// display team name(s)
-			if ( get_user_meta($userid ,'user_job_title',true )) : 
+			if ( get_user_meta($userid ,'user_job_title',true )) :
 				$html.= get_user_meta($userid ,'user_job_title',true )."<br>";
 			endif;
-			
-			if ( get_user_meta($userid ,'user_telephone',true )) : 
-	
+
+			if ( get_user_meta($userid ,'user_telephone',true )) :
+
 				$html.= '<i class="dashicons dashicons-phone"></i> <a href="tel:'.str_replace(" ", "", get_user_meta($userid ,"user_telephone",true )).'">'.get_user_meta($userid ,'user_telephone',true )."</a><br>";
-	
-			endif; 
-	
-			if ( get_user_meta($userid ,'user_mobile',true ) && $showmobile ) : 
-	
+
+			endif;
+
+			if ( get_user_meta($userid ,'user_mobile',true ) && $showmobile ) :
+
 				$html.= '<i class="dashicons dashicons-smartphone"></i> <a href="tel:'.str_replace(" ", "", get_user_meta($userid ,"user_mobile",true )).'">'.get_user_meta($userid ,'user_mobile',true )."</a><br>";
-	
+
 			 endif;
-	
+
 			$html.=  '<a href="mailto:'.$user_info->user_email.'">' . __("Email","govintranet") . ' '. $user_info->first_name. '</a></p></div></div></div>';
-			
-			$counter++;	
-			$tcounter++;	
-			
+
+			$counter++;
+			$tcounter++;
+
 		 //end full details
-		} else { 
+		} else {
 			$html.= "<div class='col-lg-6 col-md-6 col-sm-12'><div class='indexcard'><a href='".site_url()."/staff/".$user_info->user_nicename."/'><div class='media'>".$avatarhtml."<div class='media-body'><strong>".$displayname."</strong><br>";
-				
+
 			if ( get_user_meta($userid ,'user_job_title',true )) $html.= '<span class="small">'.get_user_meta($userid ,'user_job_title',true )."</span><br>";
-	
+
 			if ( get_user_meta($userid ,'user_telephone',true )) $html.= '<span class="small"><i class="dashicons dashicons-phone"></i> '.get_user_meta($userid ,'user_telephone',true )."</span><br>";
 			if ( get_user_meta($userid ,'user_mobile',true ) && $showmobile ) $html.= '<span class="small"><i class="dashicons dashicons-smartphone"></i> '.get_user_meta($userid ,'user_mobile',true )."</span>";
-							
+
 			$html.= "</div></div></div></div></a>";
-			$counter++;	
-		}	
-	} 
+			$counter++;
+		}
+	}
 	if ( $teamid ) {
 		$chevron=0;
 		$counter=0;
@@ -10341,60 +10341,60 @@ function ht_people_shortcode($atts){
 		$uid = array();
 		$ugrade = array();
 		$uorder = array();
-		$ulastname = array(); 			
-		$ufname = array(); 			
+		$ulastname = array();
+		$ufname = array();
 
 		$tq = $teamid;
  		$gradehead='';
-		$newteam = get_post( $tq ); 
+		$newteam = get_post( $tq );
 		$chevron=1;
 		$user_query = new WP_User_Query(array('orderby'=>'registered','number'=>$num,'meta_query'=>array(array('key'=>'user_team','value'=>'.*\"'.$tq.'\".*','compare'=>'REGEXP'))));
-		if ( $user_query ) foreach ($user_query->results as $u){ 
+		if ( $user_query ) foreach ($user_query->results as $u){
 			$userid = $u->ID;
 			if ( isset( $alreadyshown[$userid] ) ) continue;
-			if ( get_user_meta($userid, 'user_hide', true ) ) continue; 
+			if ( get_user_meta($userid, 'user_hide', true ) ) continue;
 			$alreadyshown[$userid] = true;
 			//don't output if this person is the team head and already displayed
 			$context = get_user_meta($userid,'user_job_title',true);
 			if ($context=='') $context="staff";
-			$icon = "user";			
+			$icon = "user";
 			$user_info = get_userdata($userid);
 			$userurl = gi_get_user_url($userid);
-			$displayname = get_user_meta($userid ,'last_name',true ).", ".get_user_meta($userid ,'first_name',true );		
+			$displayname = get_user_meta($userid ,'last_name',true ).", ".get_user_meta($userid ,'first_name',true );
 			$avstyle="";
 			if ( $directorystyle==1 ) $avstyle = " img-circle";
 			$avatarhtml = get_avatar($userid ,66);
 			$avatarhtml = str_replace(" photo", " photo alignleft".$avstyle, $avatarhtml);
 			if ($fulldetails) {
 				$html.= "<div class='pgrid-item'><div class='people-sc'><a href='".$userurl."'>".$avatarhtml."</a><div class='media-body'><p><a href='".$userurl."'><strong>".$displayname."</strong>".$gradedisplay."</a><br>";
-	
-				if ( get_user_meta($userid ,'user_job_title',true )) : 
+
+				if ( get_user_meta($userid ,'user_job_title',true )) :
 						$meta = get_user_meta($userid ,'user_job_title',true );
 						$html.= '<span class="small">'.$meta."</span><br>";
-				endif; 
-				
+				endif;
+
 				if ( get_user_meta($userid ,'user_telephone',true )) $html.= '<span class="small"><i class="dashicons dashicons-phone"></i> '.get_user_meta($userid ,'user_telephone',true )."</span><br>";
 				if ( get_user_meta($userid ,'user_mobile',true ) && $showmobile ) $html.='<span class="small"><i class="dashicons dashicons-smartphone"></i> '.get_user_meta($userid ,'user_mobile',true )."</span><br>";
-	
+
 				$html.= '<span class="small"><a href="mailto:'.$user_info->user_email.'">' . __('Email' , 'govintranet') . ' ' . $user_info->first_name. '</a></span></div></div></div>';
-	
-				$counter++;	
-				$tcounter++;	
-				
+
+				$counter++;
+				$tcounter++;
+
 			 //end full details
-			} else { 
+			} else {
 
 				$html.= "<div class='pgrid-item'><div class='people-sc'><a href='".$userurl."'><div class='media'>".$avatarhtml."<div class='media-body'><strong>".$displayname."</strong><br>";
-	
+
 				if ( get_user_meta($userid ,'user_job_title',true )) $html.= '<span class="small">'.get_user_meta($userid ,'user_job_title',true )."</span><br>";
 				if ( get_user_meta($userid ,'user_telephone',true )) $html.= '<span class="small"><i class="dashicons dashicons-phone"></i> '.get_user_meta($userid ,'user_telephone',true )."</span><br>";
 				if ( get_user_meta($userid ,'user_mobile',true ) && $showmobile ) $html.= '<span class="small"><i class="dashicons dashicons-smartphone"></i> '.get_user_meta($userid ,'user_mobile',true )."</span>";
 				$html.= "</div></div></a></div></div>";
-				$counter++;	
-			}	
+				$counter++;
+			}
 		}
 	}
-	
+
     return "<div id='peoplenav'>".$html."</div>";
 }
 
@@ -10423,12 +10423,12 @@ if( function_exists('acf_add_options_page') ) {
 		'capability'	=> 'manage_options',
 		'redirect'		=> false
 	));
-		
+
 }
 
 function gi_tag_cloud($taxonomy, $term, $post_type) {
 	global $post;
-	$taxid = get_queried_object()->term_id;	
+	$taxid = get_queried_object()->term_id;
 	$posts = new WP_Query(array(
 		'post_type' => $post_type,
 		'posts_per_page' => -1,
@@ -10441,7 +10441,7 @@ function gi_tag_cloud($taxonomy, $term, $post_type) {
 				'field' => 'slug',
 				'terms' => $term,
 			))
-		)	
+		)
 	);
 	$alltags = array();
 	if ( $posts->have_posts() ) while ($posts->have_posts()){
@@ -10462,14 +10462,14 @@ function gi_tag_cloud($taxonomy, $term, $post_type) {
 			}
 		}
 	}
-	
+
 	ksort($alltags);
-	$tagstr="<span><a  class='wptag t".$taxid."' href='".get_term_link( $term, $taxonomy )."?showtag=&paged=1'>"._x('All','all tags','govintranet')."</a></span> "; 
+	$tagstr="<span><a  class='wptag t".$taxid."' href='".get_term_link( $term, $taxonomy )."?showtag=&paged=1'>"._x('All','all tags','govintranet')."</a></span> ";
 	foreach ($alltags as $a):
 		$active='';
 		if (isset( $_GET['showtag'] ) && $_GET['showtag'] == $a['slug']) { $active = 'active " '; $activeicon="<span class='dashicons dashicons-tag'></span>&nbsp;"; } else { $active = ''; $activeicon = '';};
 		$tagstr.="<span><a class='wptag ".$active."t".$taxid;
-		$tagstr.="' href='".get_term_link( $term, $taxonomy )."?showtag=".$a['slug']."&paged=1'>" . $activeicon . str_replace(' ', '&nbsp;' , $a['name']) . '</a></span> '; 
+		$tagstr.="' href='".get_term_link( $term, $taxonomy )."?showtag=".$a['slug']."&paged=1'>" . $activeicon . str_replace(' ', '&nbsp;' , $a['name']) . '</a></span> ';
 	endforeach;
 	if ( "<span><a  class='wptag t".$taxid."' href='".get_term_link( $term, $taxonomy )."?showtag=&paged=1'>"._x('All','all tags','govintranet')."</a></span> " == $tagstr ):
 		return;
@@ -10486,40 +10486,40 @@ function gi_howto_tag_cloud($posttype) {
 		'offset' => 0,
 		'fields' => 'ids',
 		'post_status' => 'publish',
-	)	
+	)
 	);
 	$alltags = array();
-	if ( $posts->have_posts() ) while ($posts->have_posts()): 
+	if ( $posts->have_posts() ) while ($posts->have_posts()):
 	$posts->the_post();
-		$tags = get_the_tags($posts->ID); 
+		$tags = get_the_tags($posts->ID);
 		if ( $tags ) foreach ((array)$tags as $t):
 			if ( !isset( $alltags[$t->slug]['count'] ) ):
 				$alltags[$t->slug]['count'] = 1;
-			else: 
-				$alltags[$t->slug]['count'] = $alltags[$t->slug]['count'] + 1; 
+			else:
+				$alltags[$t->slug]['count'] = $alltags[$t->slug]['count'] + 1;
 			endif;
 			$alltags[$t->slug]['name'] = $t->name;
 			$alltags[$t->slug]['slug'] = $t->slug;
 			$alltags[$t->slug]['link'] = get_tag_link( $t->term_id );
 		endforeach;
 	endwhile;
-	
+
 	ksort($alltags);
-	$tagstr=""; 
+	$tagstr="";
 	foreach ($alltags as $a):
 		$tagstr=$tagstr."<span><a class='wptag ";
 		if (isset($_GET['tag']) && $_GET['tag'] == $a['slug']) $tagstr=$tagstr." active";
-		$tagstr.="' href='".$a['link']."?paged=1&type=".$temp."'>" . esc_html(str_replace(' ', '&nbsp;' , $a['name']) ) . '</a></span> '; 
+		$tagstr.="' href='".$a['link']."?paged=1&type=".$temp."'>" . esc_html(str_replace(' ', '&nbsp;' , $a['name']) ) . '</a></span> ';
 	endforeach;
 	return $tagstr;
 }
 
 function pippin_login_form_shortcode( $atts, $content = null ) {
- 
+
 	extract( shortcode_atts( array(
       'redirect' => ''
       ), $atts ) );
- 
+
 	if (!is_user_logged_in()) {
 		if($redirect) {
 			$redirect_url = $redirect;
@@ -10527,14 +10527,14 @@ function pippin_login_form_shortcode( $atts, $content = null ) {
 			$redirect_url = get_permalink();
 		}
 		$form = wp_login_form(array('echo' => false, 'redirect' => $redirect_url ));
-	} 
+	}
 	return $form;
 }
 add_shortcode('loginform', 'pippin_login_form_shortcode');
 
 
 /**
- *	Enable choice of posts with any status for parent 
+ *	Enable choice of posts with any status for parent
  *
  */
 
@@ -10553,10 +10553,10 @@ add_filter('page_attributes_dropdown_pages_args', 'gi_attributes_dropdown_pages_
  */
 function save_news_meta( $post_id ) {
 
-	$tzone = get_option('timezone_string'); 
+	$tzone = get_option('timezone_string');
 	if ( $tzone ) date_default_timezone_set($tzone);
 
-	// Update expiry time meta 
+	// Update expiry time meta
 
     $slug = 'news';
 
@@ -10575,7 +10575,7 @@ function save_news_meta( $post_id ) {
     $slug = 'news-update';
 
     if ( isset( $_POST['post_type'] ) && $slug == $_POST['post_type'] ) {
-	
+
 	    // - Update the post's metadata.
 	    $prev = get_post_meta( $post_id, 'news_update_expiry_time',true );
 	    if ( $prev ) {
@@ -10584,7 +10584,7 @@ function save_news_meta( $post_id ) {
 		}
 
 		return;
-	}	
+	}
 
     $slug = 'vacancy';
 
@@ -10631,7 +10631,7 @@ function save_news_meta( $post_id ) {
 		}
 		return;
 	}
-	
+
 	return;
 }
 add_action( 'save_post', 'save_news_meta' );
@@ -10642,7 +10642,7 @@ function save_keyword_meta( $post_id ) {
      * In production code, $slug should be set only once in the plugin,
      * preferably as a class property, rather than in each function that needs it.
      */
-    $slug = array('news','news-update','page','task','blogpost','project','vacancy','team','event');
+    $slug = array('news','news-update','page','task','blogpost','casestudy','vacancy','team','event');
 
     if ( isset( $_POST['post_type'] ) && !in_array( $_POST['post_type'] , $slug ) ) {
         return;
@@ -10658,17 +10658,17 @@ function save_keyword_meta( $post_id ) {
 }
 add_action( 'save_post', 'save_keyword_meta' );
 
-if ( get_option('options_module_staff_directory') && get_option('options_module_teams') ) { 
+if ( get_option('options_module_staff_directory') && get_option('options_module_teams') ) {
 	add_action( 'before_delete_post', 'govintranet_post_delete_tidy' );
 	function govintranet_post_delete_tidy( $postid ){
-	
+
 	    // We check if the global post type isn't ours and just return
-	    global $post_type;   
+	    global $post_type;
 	    if ( $post_type != 'team' ) return;
-	
+
 	    // Delete team from user meta
 		$user_query = new WP_User_Query(array('meta_query'=>array(array('key'=>'user_team','value'=>'.*\"'.$postid.'\".*','compare'=>'REGEXP'))));
-		if ( $user_query ) foreach ($user_query->results as $u){ 
+		if ( $user_query ) foreach ($user_query->results as $u){
 			$oldteams = get_user_meta($u->ID,'user_team',true);
 			$newteams = array();
 			foreach ( $oldteams as $ut ){
@@ -10681,34 +10681,34 @@ if ( get_option('options_module_staff_directory') && get_option('options_module_
 				delete_user_meta($u->ID, 'user_team', $oldteams);
 			}
 		}
-	    
+
 	}
 }
 
 if ( get_option('options_module_staff_directory') ) {
 	add_action( "delete_grade",'govintranet_term_delete_tidy', 10,4 );
 	function govintranet_term_delete_tidy( $term_id, $term_taxonomy_id, $deleted_term, $object_ids ){
-	
+
 	    // Delete grade from user meta
 		$user_query = new WP_User_Query(array('meta_query'=>array(array('key'=>'user_grade','value'=>$term_id))));
-		if ( $user_query ) foreach ($user_query->results as $u){ 
+		if ( $user_query ) foreach ($user_query->results as $u){
 			delete_user_meta($u->ID, 'user_grade');
 		}
-	
-	}	
+
+	}
 }
 
 function ht_filter_search($query) {
-    if ($query->is_tag && !is_admin()) { 
+    if ($query->is_tag && !is_admin()) {
 		$query->set('post_type', array('any'));
     }
     return $query;
-}; 
+};
 add_filter('pre_get_posts', 'ht_filter_search');
 
 // set login banner link to intranet homepage
 function ht_login_url(){
-	return site_url("/"); 
+	return site_url("/");
 }
 
 add_filter('login_headerurl', 'ht_login_url');
@@ -10719,9 +10719,9 @@ function govintranet_loginout_menu_link( $menu ) {
     $loginout = wp_loginout($_SERVER['REQUEST_URI'], false );
     if ( is_user_logged_in() && get_option("options_show_my_profile", false) ) {
 	    $current_user = wp_get_current_user();
-		$userurl = gi_get_user_url( $current_user->ID ); 
+		$userurl = gi_get_user_url( $current_user->ID );
 	    $menu.= '<li id="ht_my_profile" class=menu-item><a href="'. $userurl .'">'.__("My profile","govintranet").'</a></li>';
-    }    
+    }
     if ( get_option('options_show_login_logout') ) $menu.= "<li class='loginout'>".$loginout."</li>";
     return $menu;
 }
@@ -10730,9 +10730,9 @@ function govintranet_loginout_menu_link( $menu ) {
  * Change the comment reply link to use 'Reply to &lt;Author First Name>'
  */
 function add_comment_author_to_reply_link($link, $args, $comment){
- 
+
     $comment = get_comment( $comment );
- 
+
     // If no comment author is blank, use 'Anonymous'
     if ( empty($comment->comment_author) ) {
         if (!empty($comment->user_id)){
@@ -10744,17 +10744,17 @@ function add_comment_author_to_reply_link($link, $args, $comment){
     } else {
         $author = $comment->comment_author;
     }
- 
+
     // If the user provided more than a first name, use only first name
     if(strpos($author, ' ')){
         $author = substr($author, 0, strpos($author, ' '));
     }
- 
+
     // Replace Reply Link with "Reply to &lt;Author First Name>"
     $reply_link_text = $args['reply_text'];
     $replyto = sprintf( __('Reply to %s', 'govintranet'), $author );
     $link = str_replace($reply_link_text, $replyto , $link);
- 
+
     return $link;
 }
 add_filter('comment_reply_link', 'add_comment_author_to_reply_link', 10, 3);
@@ -10762,10 +10762,10 @@ add_filter('comment_reply_link', 'add_comment_author_to_reply_link', 10, 3);
 function ht_add_comment_form_top($comment){
 	$custom_comment_text = "";
 	if ( is_user_logged_in() ):
-		$custom_comment_text = get_option("options_comment_instructions_logged_in", "");	
+		$custom_comment_text = get_option("options_comment_instructions_logged_in", "");
 		echo wpautop($custom_comment_text);
 	else:
-		$custom_comment_text = get_option("options_comment_instructions_logged_out", "");	
+		$custom_comment_text = get_option("options_comment_instructions_logged_out", "");
 	endif;
 	return;
 }
@@ -10773,19 +10773,19 @@ add_filter('comment_form_top', 'ht_add_comment_form_top', 10, 3);
 
 
 /*****************************
-	
-ADD FIRST NAME AND LAST 
+
+ADD FIRST NAME AND LAST
 NAME IN REGISTRATION FORM
-	
+
 *****************************/
 //1. Add a new form element...
 add_action( 'register_form', 'govintranet_register_form', 1 );
-	
+
 function govintranet_register_form() {
 
     $first_name = ( ! empty( $_POST['first_name'] ) ) ? trim( $_POST['first_name'] ) : '';
     $last_name = ( ! empty( $_POST['last_name'] ) ) ? trim( $_POST['last_name'] ) : '';
-    
+
     ?>
     <p>
         <label for="first_name"><?php _e( 'First Name', 'govintranet' ) ?><br />
@@ -10801,7 +10801,7 @@ function govintranet_register_form() {
 //2. Add validation. In this case, we make sure first_name is required.
 add_filter( 'registration_errors', 'govintranet_registration_errors', 10, 3 );
 function govintranet_registration_errors( $errors, $sanitized_user_login, $user_email ) {
-    
+
     if ( empty( $_POST['first_name'] ) || ! empty( $_POST['first_name'] ) && trim( $_POST['first_name'] ) == '' ) {
         $errors->add( 'first_name_error', __( '<strong>ERROR</strong>: You must include a first name.', 'govintranet' ) );
     }
@@ -10827,39 +10827,39 @@ function govintranet_user_register( $user_id ) {
 		$user_id = wp_update_user( array( 'ID' => $user_id, 'display_name' => $displayname ) );
     }
 }
-    
+
 /* Callback function for taxonomies */
 function ht_update_post_term_count( $terms, $taxonomy ) {
     global $wpdb;
- 
+
     $object_types = (array) $taxonomy->object_type;
- 
+
     foreach ( $object_types as &$object_type )
         list( $object_type ) = explode( ':', $object_type );
- 
+
     $object_types = array_unique( $object_types );
- 
+
     if ( $object_types )
         $object_types = esc_sql( array_filter( $object_types, 'post_type_exists' ) );
- 
+
     foreach ( (array) $terms as $term ) {
         $count = 0;
- 
+
         if ( $object_types )
             $count += (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->term_relationships, $wpdb->posts WHERE $wpdb->posts.ID = $wpdb->term_relationships.object_id AND post_status = 'publish' AND post_type IN ('" . implode("', '", $object_types ) . "') AND term_taxonomy_id = %d", $term ) );
- 
+
         /** This action is documented in wp-includes/taxonomy.php */
         do_action( 'edit_term_taxonomy', $term, $taxonomy->name );
         $wpdb->update( $wpdb->term_taxonomy, compact( 'count' ), array( 'term_taxonomy_id' => $term ) );
- 
+
         /** This action is documented in wp-includes/taxonomy.php */
         do_action( 'edited_term_taxonomy', $term, $taxonomy->name );
     }
-}    
+}
 
 function govintranet_custom_styles() {
 	$custom_css = "";
-	
+
 	// write custom css for background header colour
 
 	$link_color = get_theme_mod('link_color', '#428bca');
@@ -10869,9 +10869,9 @@ function govintranet_custom_styles() {
 	$custom_logo_id = get_theme_mod( 'custom_logo' );
 	$btn_text = get_option('options_btn_text_colour','#ffffff');
 	$gisheight = intval(get_option('options_widget_border_height'));
-	$gishex = get_option('header_background', '#0b2d49'); 
+	$gishex = get_option('header_background', '#0b2d49');
 	$directorystyle = get_option('options_staff_directory_style'); // 0 = squares, 1 = circles
-	$jumbo_searchbox = get_option("options_search_jumbo_searchbox", false);		
+	$jumbo_searchbox = get_option("options_search_jumbo_searchbox", false);
 
 	if (!$gisheight) $gisheight = 7;
 	if ( $gishex == "#") $gishex = "#0b2d49";
@@ -10881,7 +10881,7 @@ function govintranet_custom_styles() {
 	if (get_option('options_complementary_colour')):
 		$giscc = get_option('options_complementary_colour');
 	else:
-		 $giscc = $gishex; 
+		 $giscc = $gishex;
 	endif;
 
 	$custom_css.= "a, a .listglyph  {color: ".$link_color.";}";
@@ -10895,8 +10895,8 @@ function govintranet_custom_styles() {
 	$custom_css.= "
 	@media only screen and (max-width: 767px)  {
 		#masthead  { background: ".$gishex." !important; color: ".$headtext."; padding: 0 1em; }
-		#primarynav ul li a {background: ".$gishex."; color: ".$headtext."; }	
-		#primarynav ul li a:hover {color: ".$gishex." !important; background: ".$headtext."; }	
+		#primarynav ul li a {background: ".$gishex."; color: ".$headtext."; }
+		#primarynav ul li a:hover {color: ".$gishex." !important; background: ".$headtext."; }
 	}";
 	$custom_css.= ".btn-primary, .btn-primary a, #commentform #submit  { background: ".$giscc."; border: 1px solid ".$giscc."; color: ".$btn_text."; } ";
 	$custom_css.= "#utilitybar ul.menu li {border-right:1px solid ".$btn_text.";}";
@@ -10917,7 +10917,7 @@ function govintranet_custom_styles() {
 
 	//write custom css for logo
 	if ( $custom_logo_id ) {
-		$gislogow = wp_get_attachment_image_src( $custom_logo_id , 'full'); 
+		$gislogow = wp_get_attachment_image_src( $custom_logo_id , 'full');
 		$gislogo = $gislogow[0] ;
 		$gisw = $gislogow[1];
 		$gish = $gislogow[2];
@@ -10931,10 +10931,10 @@ function govintranet_custom_styles() {
 	$custom_css.= "#primarynav ul li  { border-bottom: 1px solid ".$gishex."; border-top: 1px solid ".$gishex."; border-right: 1px solid ".$gishex."; }
 	#primarynav ul li:last-child {border-right: 1px solid ".$gishex.";}
 	#primarynav ul li:first-child  {	border-left: 1px solid ".$gishex.";	}
-	#searchformdiv button:hover { background: ".$gishex."; color: ".$btn_text."; }";		
+	#searchformdiv button:hover { background: ".$gishex."; color: ".$btn_text."; }";
 	$custom_css.= "a.wptag {color: ".$btn_text."; background: ".$gishex.";} \n";
-	if ($headimage != 'remove-header' && $headimage) $custom_css.= '#utilitybar ul.menu li a, #crownlink { text-shadow: 1px 1px #333; }'; 
-	
+	if ($headimage != 'remove-header' && $headimage) $custom_css.= '#utilitybar ul.menu li a, #crownlink { text-shadow: 1px 1px #333; }';
+
 	//write css for category colours
 	$terms = get_terms('category',array('hide_empty'=>false));
 	if ($terms) {
@@ -10963,27 +10963,27 @@ function govintranet_custom_styles() {
   			$custom_css.= ".gb" . $themeid . "{color: " . $background . ";} \n";
   			$custom_css.= "a:visited.wptag.t". $themeid . "{color: " . $foreground . ";} \n";
 		}
-	}  
-	
-	if ( $jumbo_searchbox ) $custom_css.= "		
+	}
+
+	if ( $jumbo_searchbox ) $custom_css.= "
 	#headsearch { padding-right: 0; }
 	#searchformdiv.altsearch { padding: 1.75em 6em 1.75em 6em; background: " . $giscc . "; }
 	#searchformdiv.altsearch button.btn.btn-primary { background: " . $gishex . "; color: ".$btn_text."; }
 	#searchformdiv.altsearch button.btn.btn-primary:hover { background-color: #eee; color: black; }
 	";
-	
+
 	if ( get_option("options_staff_directory_style") && get_option("options_forum_support") ) $custom_css.= "#bbpress-forums img.avatar { border-radius: 50%; display: inline-block;}";
-	
+
 	$custom_css.='
 	#buddypress input[type=submit], #buddypress .button, body:not(.bbp-user-edit).bbpress .button, #loginform .button-primary {
-	background: '.$gishex.' !important; 
-	border: 1px solid '.$gishex.' !important;	
+	background: '.$gishex.' !important;
+	border: 1px solid '.$gishex.' !important;
 	}
 	';
 
 	$styleurl = get_template_directory_uri() . '/css/custom.css';
 	wp_enqueue_style( 'govintranet_custom_styles', $styleurl );
-	wp_add_inline_style('govintranet_custom_styles' , $custom_css);	
+	wp_add_inline_style('govintranet_custom_styles' , $custom_css);
 }
 add_action( 'wp_enqueue_scripts', 'govintranet_custom_styles' );
 
@@ -10993,9 +10993,9 @@ add_action( 'wp_enqueue_scripts', 'govintranet_custom_styles' );
 if ( get_option('options_module_events') ){
 
 	add_filter( 'manage_edit-event_columns', 'gi_edit_event_columns' ) ;
-	
+
 	function gi_edit_event_columns( $columns ) {
-	
+
 		$columns = array(
 			'cb' => '<input type="checkbox" />',
 			'title' => __( 'Event','govintranet' ),
@@ -11004,44 +11004,44 @@ if ( get_option('options_module_events') ){
 			'date' => __( 'Date' , 'govintranet' ),
 			'author' => __( 'Author' , 'govintranet' ),
 		);
-	
+
 		return $columns;
 	}
 
 	add_action( 'manage_event_posts_custom_column', 'gi_manage_event_columns', 10, 2 );
-	
+
 	function gi_manage_event_columns( $column, $post_id ) {
 		global $post;
 		$date_format = get_option("date_format", "d-m-Y");
 		switch( $column ) {
-	
+
 			/* If displaying the 'event_start_date' column. */
 			case 'event_start_date' :
-	
+
 				/* Get the post meta. */
 				$start = get_post_meta( $post_id, 'event_start_date', true );
-	
+
 				/* If no event_start_date is found, output a default message. */
 				if ( empty( $start ) )
 					echo "&mdash;";
-	
+
 				/* If there is an event_start_date, display */
 				else
 					echo date($date_format,strtotime($start));
-	
+
 				break;
-	
+
 			/* If displaying the 'event_type' column. */
 			case 'event_type' :
-	
+
 				/* Get the event_type for the post. */
-				$terms = get_the_terms( $post_id, 'event-type' ); 
-	
+				$terms = get_the_terms( $post_id, 'event-type' );
+
 				/* If terms were found. */
 				if ( !empty( $terms ) ) {
-	
+
 					$out = array();
-	
+
 					/* Loop through each term, linking to the 'edit posts' page for the specific term. */
 					foreach ( $terms as $term ) {
 						$out[] = sprintf( '<a href="%s">%s</a>',
@@ -11049,19 +11049,19 @@ if ( get_option('options_module_events') ){
 							esc_html( sanitize_term_field( 'name', $term->name, $term->term_id, 'event-type', 'display' ) )
 						);
 					}
-	
+
 					/* Join the terms, separating them with a comma. */
 					echo join( ', ', $out );
 				}
-	
+
 				/* If no terms were found, output a default message. */
 				else {
 					echo "&mdash;";
 				}
-	
+
 				break;
-	
-					
+
+
 			/* Just break out of the switch statement for everything else. */
 			default :
 				break;
@@ -11069,11 +11069,11 @@ if ( get_option('options_module_events') ){
 	}
 
 	add_filter( 'manage_edit-event_sortable_columns', 'gi_event_sortable_columns' );
-	
+
 	function gi_event_sortable_columns( $columns ) {
-	
+
 		$columns['event_start_date'] = 'event_start_date';
-	
+
 		return $columns;
 	}
 
@@ -11086,13 +11086,13 @@ if ( get_option('options_module_events') ){
 
 	/* Sorts the events. */
 	function gi_sort_event( $vars ) {
-	
+
 		/* Check if we're viewing the 'event' post type. */
 		if ( isset( $vars['post_type'] ) && 'event' == $vars['post_type'] ) {
-	
+
 			/* Check if 'orderby' is set to 'event_start_date'. */
 			if ( isset( $vars['orderby'] ) && 'event_start_date' == $vars['orderby'] ) {
-	
+
 				/* Merge the query vars with our custom variables. */
 				$vars = array_merge(
 					$vars,
@@ -11103,7 +11103,7 @@ if ( get_option('options_module_events') ){
 				);
 			}
 		}
-	
+
 		return $vars;
 	}
 
@@ -11125,7 +11125,7 @@ function govintranet_add_fivemin( $schedules ) {
 	);
 	return $schedules;
 }
-add_filter( 'cron_schedules', 'govintranet_add_fivemin' ); 
+add_filter( 'cron_schedules', 'govintranet_add_fivemin' );
 
 add_action( 'init' , 'govintranet_cron_setup' );
 function govintranet_cron_setup() {
@@ -11144,14 +11144,14 @@ function govintranet_cron_setup() {
 add_action( 'govintranet_expiry_patrol', 'govintranet_expiry_patrol_cron' );
 function govintranet_expiry_patrol_cron() {
 
-	$tzone = get_option('timezone_string'); 
+	$tzone = get_option('timezone_string');
 	if ( $tzone ) date_default_timezone_set($tzone);
 	$tdate= date('Ymd');
-	
+
 	// PROCESS NEWS
-	
+
 	if ( get_option('options_module_news') ){
-	
+
 		$oldnews = query_posts(array(
 			'post_type'=>'news',
 			'meta_query'=>array(
@@ -11166,13 +11166,13 @@ function govintranet_expiry_patrol_cron() {
 				'compare'=>'<='
 				),
 			)));
-		
+
 		if ( count($oldnews) > 0 ){
 			foreach ($oldnews as $old) {
 				if ($tdate == date('Ymd',strtotime(get_post_meta($old->ID,'news_expiry_date',true)) )){ // if expiry today, check the time
 					if (date('H:i:s',strtotime(get_post_meta($old->ID,'news_expiry_time',true))) > date('H:i:s') ) continue;
 				}
-				
+
 				$expiryaction = get_post_meta($old->ID,'news_expiry_action',true);
 				if ($expiryaction=='Revert to draft status'){
 					delete_post_meta($old->ID, 'news_expiry_date');
@@ -11184,7 +11184,7 @@ function govintranet_expiry_patrol_cron() {
 					$my_post['post_status'] = 'draft';
 					wp_update_post( $my_post );
 				} elseif ($expiryaction=='Change to regular news'){
-					set_post_format($old->ID, ''); 
+					set_post_format($old->ID, '');
 					delete_post_meta($old->ID, 'news_expiry_date');
 					delete_post_meta($old->ID, 'news_expiry_time');
 					delete_post_meta($old->ID, 'news_expiry_action');
@@ -11199,7 +11199,7 @@ function govintranet_expiry_patrol_cron() {
 					$my_post['post_status'] = 'trash';
 					wp_update_post( $my_post );
 				} elseif ($expiryaction=='Change tax'){
-					$new_tax = get_post_meta($old->ID,'news_expiry_type',true); 
+					$new_tax = get_post_meta($old->ID,'news_expiry_type',true);
 					$new_tax = intval($new_tax);
 					wp_delete_object_term_relationships( $old->ID, 'news-type' );
 					if ( $new_tax ) wp_set_object_terms( $old->ID, $new_tax, 'news-type', false );
@@ -11208,7 +11208,7 @@ function govintranet_expiry_patrol_cron() {
 					delete_post_meta($old->ID, 'news_expiry_action');
 					delete_post_meta($old->ID, 'news_auto_expiry');
 					delete_post_meta($old->ID, 'news_expiry_type');
-				}	
+				}
 			}
 		}
 	}
@@ -11217,7 +11217,7 @@ function govintranet_expiry_patrol_cron() {
 	// PROCESS NEWS UPDATES
 
 	if ( get_option('options_module_news_updates') ){
-		
+
 		$oldnews = query_posts(array(
 			'post_type'=>'news-update',
 			'meta_query'=>array(
@@ -11232,13 +11232,13 @@ function govintranet_expiry_patrol_cron() {
 				'compare'=>'<='
 				)
 			)));
-			
+
 		if ( count($oldnews) > 0 ){
 			foreach ($oldnews as $old) {
 				if ($tdate == date('Ymd',strtotime(get_post_meta($old->ID,'news_update_expiry_date',true)) )){ // if expiry today, check the time
 					if (date('H:i:s',strtotime(get_post_meta($old->ID,'news_update_expiry_time',true))) > date('H:i:s') ) continue;
 				}
-				
+
 				$expiryaction = get_post_meta($old->ID,'news_update_expiry_action',true);
 				if ($expiryaction=='Revert to draft status'){
 					delete_post_meta($old->ID, 'news_update_expiry_date');
@@ -11261,7 +11261,7 @@ function govintranet_expiry_patrol_cron() {
 					$my_post['post_status'] = 'trash';
 					wp_update_post( $my_post );
 				} elseif ($expiryaction=='Change tax'){
-					$new_tax = get_post_meta($old->ID,'news_update_expiry_type',true); 
+					$new_tax = get_post_meta($old->ID,'news_update_expiry_type',true);
 					$new_tax = intval($new_tax);
 					wp_delete_object_term_relationships( $old->ID, 'news-update-type' );
 					if ( $new_tax ) wp_set_object_terms( $old->ID, $new_tax, 'news-update-type', false );
@@ -11270,17 +11270,17 @@ function govintranet_expiry_patrol_cron() {
 					delete_post_meta($old->ID, 'news_update_expiry_action');
 					delete_post_meta($old->ID, 'news_update_auto_expiry');
 					delete_post_meta($old->ID, 'news_update_expiry_type');
-				}		
+				}
 			}
-		}	
+		}
 	}
 
 	//CHANGE CLOSED VACANCIES TO DRAFT STATUS
 
 	if ( get_option('options_module_vacancies') ){
 
-		$ttime = date('H:i'); 
-		
+		$ttime = date('H:i');
+
 		$oldvacs = query_posts(array(
 		'post_type'=>'vacancy',
 		'meta_query'=>array(array(
@@ -11288,7 +11288,7 @@ function govintranet_expiry_patrol_cron() {
 		'value'=>$tdate,
 		'compare'=>'<=',
 		))));
-		
+
 		if ( count($oldvacs) > 0 ){
 			foreach ($oldvacs as $old) {
 				$closing_date = get_post_meta($old->ID,'vacancy_closing_date',true);
@@ -11298,10 +11298,10 @@ function govintranet_expiry_patrol_cron() {
 				$my_post['ID'] = $old->ID;
 				$my_post['post_status'] = 'draft';
 				wp_update_post( $my_post );
-			}	
+			}
 		}
 	}
-	
+
 	// CHANGE CLOSED EVENTS TO DRAFT STATUS
 
 	if ( get_option('options_module_events_draft') ){
@@ -11312,7 +11312,7 @@ function govintranet_expiry_patrol_cron() {
 			'value'=>$tdate,
 			'compare'=>'<='
 			))));
-		
+
 		if ( count($oldvacs) > 0 ){
 			foreach ($oldvacs as $old) {
 				if ($tdate == date('Ymd',strtotime(get_post_meta($old->ID,'event_end_date',true)) )){ // if expiry today, check the time
@@ -11322,7 +11322,7 @@ function govintranet_expiry_patrol_cron() {
 				$my_post['ID'] = $old->ID;
 				$my_post['post_status'] = 'draft';
 				wp_update_post( $my_post );
-			}	
+			}
 		}
 	}
 }
@@ -11342,7 +11342,7 @@ function govintranet_default_content( $post_content, $post ) {
         case 'vacancy':
             $post->comment_status = 'closed';
 			break;
-        case 'project':
+        case 'casestudy':
             $post->comment_status = 'closed';
 			break;
         case 'team':
@@ -11574,8 +11574,8 @@ function govintranet_theme_cover_image( $params = array() ) {
 				margin: 5px 0;
 			}
 		}
-		div.item-list-tabs { 
-			background:'.get_option("header_background", "#0b2d49").'; 
+		div.item-list-tabs {
+			background:'.get_option("header_background", "#0b2d49").';
 		}
 		div.item-list-tabs ul li a {
 			text-decoration:none;
@@ -11584,7 +11584,7 @@ function govintranet_theme_cover_image( $params = array() ) {
 
 
 
-		
+
 	';
 }
 
@@ -11596,7 +11596,7 @@ function govintranet_theme_cover_image( $params = array() ) {
 
 add_action( 'bp_get_activity_avatar', 'gi_bp_avatar' );
 function gi_bp_avatar($args){
-	if ( get_option('options_staff_directory_style') ) $args = str_replace( 'avatar ', 'avatar img-circle ', $args ); 
+	if ( get_option('options_staff_directory_style') ) $args = str_replace( 'avatar ', 'avatar img-circle ', $args );
 	return $args;
 }
 
@@ -11614,7 +11614,7 @@ function gi_get_user_url( $user_id ){
 	$user_nicename = $user_info->user_nicename;
 
 	if ( function_exists('bp_core_get_userlink') ) {
-		// BUDDYPRESS 
+		// BUDDYPRESS
 		$profile_url = site_url() . "/members/" . $user_nicename . "/profile/";
 	} elseif ( function_exists('bbp_user_profile_url') && get_option('options_module_staff_directory') ){
 		// BBPRESS
@@ -11622,7 +11622,7 @@ function gi_get_user_url( $user_id ){
 	} else {
 		$profile_url = get_author_posts_url( $user_id, $user_nicename );
 	}
-	
+
 	return $profile_url;
 }
 

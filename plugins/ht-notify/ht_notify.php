@@ -11,34 +11,34 @@ Author URI: https://www.agentodigital.com
 class htnotify_add extends WP_Widget {
 
 	function __construct() {
-		
+
 		parent::__construct(
 			'htnotify_add',
 			__( 'HT Add to notifications' , 'govintranet'),
 			array( 'description' => __( 'Displays a button to add to notifications' , 'govintranet') )
-		);   
-		
+		);
+
 		/*
 		Load css
 		*/
 		wp_enqueue_style( 'notify', plugins_url("/ht-notify/css/ht_notify.css"));
-        
+
     }
 
     function widget($args, $instance) {
-	    
+
 	    if ( is_user_logged_in() ):
 
 		    global $post;
 		    $post_id = $post->ID;
-	        extract( $args ); 
+	        extract( $args );
 	        $widget_id = $id. "-" . $this->number;
 			$user_id = get_current_user_id();
 			$notes = get_user_meta($user_id, 'user_notifications', true);
 			$nonce = wp_create_nonce ('ht_notify_add_'.$widget_id);
-	        
+
 	        $path = plugin_dir_url( __FILE__ );
-	
+
 	        wp_enqueue_script( 'ht_notify', $path.'js/ht_notify.js' );
 	        $protocol = isset( $_SERVER["HTTPS"]) ? 'https://' : 'http://';
 	        $params = array(
@@ -52,13 +52,13 @@ class htnotify_add extends WP_Widget {
 	        'spinner' => $path.'images/small-squares.gif',
 	        );
 	        wp_localize_script( 'ht_notify', 'ht_notify', $params );
-	
+
 			echo "<div id='ht_notify_".$widget_id."' class='ht_notify'>";
 			echo "</div>";
-	
-			wp_reset_postdata();		
 
-		endif;				
+			wp_reset_postdata();
+
+		endif;
 
     }
 
@@ -87,8 +87,8 @@ function ht_notify_ajax_add() {
 	$user_id = $_POST['user_id'];
 	$nonce = $_POST['nonce'];
     $response = new WP_Ajax_Response;
-			
-	
+
+
 	if ($html){
 		$finalhtml = "";//$before_widget;
 		$finalhtml.= $html;
@@ -115,10 +115,10 @@ function ht_notify_ajax_add() {
     }
 
     $response->send();
-    
+
     exit();
 }
-  
+
 
 add_action('widgets_init', 'ht_notify_register');
 
@@ -126,9 +126,9 @@ function ht_notify_register() {
 		/*
 		Register custom user fields
 		*/
-        
+
 		if( function_exists('acf_add_local_field_group') ):
-		
+
 		acf_add_local_field_group(array (
 			'key' => 'group_ht_notifications',
 			'title' => __('Notifications','govintranet'),
@@ -149,7 +149,7 @@ function ht_notify_register() {
 					'post_type' => array (
 						0 => 'page',
 						1 => 'team',
-						2 => 'project',
+						2 => 'casestudy',
 						3 => 'task',
 					),
 					'taxonomy' => array (
@@ -182,14 +182,14 @@ function ht_notify_register() {
 			'active' => 1,
 			'description' => '',
 		));
-		
+
 		endif;
 
 }
 
 add_action( 'wp_ajax_ht_notify_ajax_action_add', 'ht_notify_ajax_action_add' );
 function ht_notify_ajax_action_add() {
-	$nonce = $_POST['nonce']; 	
+	$nonce = $_POST['nonce'];
 	$widget_id = $_POST['widget_id'];
 	$post_id = $_POST['post_id'];
     $response = new WP_Ajax_Response;
@@ -199,21 +199,21 @@ function ht_notify_ajax_action_add() {
 	if ($current_user->ID) $user_id = $current_user->ID;
 	if ( ! wp_verify_nonce( $nonce,  'ht_notify_add_'.$widget_id ) ) {
 	    // This nonce is not valid.
-	    $html =  __("Security check - there is something wrong","govintranet") ; 
+	    $html =  __("Security check - there is something wrong","govintranet") ;
 	} else {
 	    // The nonce was valid.
 	    // Do stuff here.
 			$user_id = $_POST['user_id'];
 			$current_user = wp_get_current_user();
-			$current_user_id = $current_user->ID; 
+			$current_user_id = $current_user->ID;
 			//
 			if ($user_id!=$current_user_id){
-			    $html =  __("Security check - can\'t check your identity","govintranet") ; 	
+			    $html =  __("Security check - can\'t check your identity","govintranet") ;
 			} else {
 				$notes = get_user_meta($user_id, 'user_notifications', true);
 				if ( isset($notes) ):
 					if ( !in_array($post_id, (array)$notes ) ) $notes[] = $post_id;
-					update_user_meta($current_user_id,'user_notifications', $notes); 
+					update_user_meta($current_user_id,'user_notifications', $notes);
 				endif;
 				$html = '<div class="ht_addtonotifications btn btn-sm btn-primary">' . __('Notifications started','govintranet') . '</div>';
 				$success = true;
@@ -242,7 +242,7 @@ function ht_notify_ajax_action_add() {
 
 add_action( 'wp_ajax_ht_notify_ajax_action_del', 'ht_notify_ajax_action_del' );
 function ht_notify_ajax_action_del() {
-	$nonce = $_POST['nonce']; 	
+	$nonce = $_POST['nonce'];
 	$widget_id = $_POST['widget_id'];
 	$post_id = $_POST['post_id'];
     $response = new WP_Ajax_Response;
@@ -252,16 +252,16 @@ function ht_notify_ajax_action_del() {
 	if ($current_user->ID) $user_id = $current_user->ID;
 	if ( ! wp_verify_nonce( $nonce,  'ht_notify_add_'.$widget_id ) ) {
 	    // This nonce is not valid.
-	    $html =  __("Security check - there is something wrong","govintranet") ; 
+	    $html =  __("Security check - there is something wrong","govintranet") ;
 	} else {
 	    // The nonce was valid.
 	    // Do stuff here.
 			$user_id = $_POST['user_id'];
 			$current_user = wp_get_current_user();
-			$current_user_id = $current_user->ID; 
+			$current_user_id = $current_user->ID;
 			//
 			if ($user_id!=$current_user_id){
-			    $html =  __("Security check - can\'t check your identity","govintranet") ; 	
+			    $html =  __("Security check - can\'t check your identity","govintranet") ;
 			} else {
 				$notes = get_user_meta($user_id, 'user_notifications', true);
 				$newfaves = array();
@@ -271,7 +271,7 @@ function ht_notify_ajax_action_del() {
 					if ( $f == $post_id ) continue;
 					$newfaves[] = $f;
 				}
-			    update_user_meta($current_user_id,'user_notifications', $newfaves); 
+			    update_user_meta($current_user_id,'user_notifications', $newfaves);
 				$html = '<div class="ht_addtonotifications btn btn-sm btn-default">' . __('Notification removed','govintranet') . '</div>';
 				$success = true;
 			}
@@ -315,7 +315,7 @@ function notify_monitor() {
 	if ( !$last_run ) $last_run = $this_run;
 	// query all posts for modified date since the last run
 	$q = "SELECT ID from $wpdb->posts where post_status = 'publish' and post_modified > '".$last_run."'";
-	$new_mods = $wpdb->get_results($q); 
+	$new_mods = $wpdb->get_results($q);
 	// create array to store users and posts matrix
 	$to_notify = array();
 	// for each post
@@ -323,7 +323,7 @@ function notify_monitor() {
 		foreach ( (array)$new_mods as $n ){
 			//	find the users who have subscribed to this post
 			$user_query = new WP_User_Query(array('meta_query'=>array(array('key'=>'user_notifications','value'=>'.*\"'.$n->ID.'\".*','compare'=>'REGEXP'))));
- 			if ( $user_query ) foreach ($user_query->results as $u){ 
+ 			if ( $user_query ) foreach ($user_query->results as $u){
 	 			$temp = $to_notify[$u->ID];
 	 			if ( !$temp ) $temp = array();
 	 			$temp[] = $n;
@@ -334,9 +334,9 @@ function notify_monitor() {
 
 	// run through the users/posts matrix and email notifications
 	if ( count(!$to_notify) > 0 ):
-		foreach ( $to_notify as $userid=>$posts ){ 
+		foreach ( $to_notify as $userid=>$posts ){
 			// get user details
-			$user = get_userdata($userid); 
+			$user = get_userdata($userid);
 			$to = $user->user_email;
 			// compose email
 			$sitename = get_option("blogname", __("Intranet","govintranet"));
@@ -350,11 +350,11 @@ function notify_monitor() {
 			}
 			$body.= "</ul>";
 			// send email to user
-			wp_mail( $to, $subject, $body, $headers ); 
+			wp_mail( $to, $subject, $body, $headers );
 		}
 	endif;
 
-	update_option("ht_notify_last_run", $this_run );	
+	update_option("ht_notify_last_run", $this_run );
 }
 
 function ht_notify_ajax_show() {
@@ -373,17 +373,17 @@ function ht_notify_ajax_show() {
 	else:
 		$html.= "<a onclick='javascript:delnotifications();' class='ht_addtonotifications btn btn-sm btn-default'>".__('Stop notifications','govintranet')."</a>";
 	endif;
-			
-	$html.= $after_widget; 	
-	wp_reset_postdata();		
-	
+
+	$html.= $after_widget;
+	wp_reset_postdata();
+
 
 	if( $html ) {
         // Request successful
         $response->add( array(
             'data' => 'success',
             'supplemental' => array(
-                'message' => $html 
+                'message' => $html
             ),
         ) );
     } else {
