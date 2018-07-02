@@ -1142,7 +1142,7 @@ if ( get_option( 'options_module_events' ) ) {
 		'menu_position' => '28',
 		'menu_icon' => 'dashicons-calendar-alt',
 		'supports' => array('title','editor','excerpt','comments','revisions','thumbnail','author'),
-		'taxonomies' => array('post_tag','event-type'),
+		'taxonomies' => array('post_tag','event-type','geographicalfootprint'),
 		'labels' => array (
 		  'name' => __('Events','govintranet'),
 		  'singular_name' => __('Event','govintranet'),
@@ -1221,7 +1221,7 @@ if ( get_option( 'options_module_news' ) ) {
 		'menu_position' => '34',
 		'menu_icon' => 'dashicons-format-status',
 		'supports' => array('title','editor','excerpt','comments','revisions','thumbnail','author','post-formats'),
-		'taxonomies' => array('post_tag'),
+		'taxonomies' => array('post_tag','geographicalfootprint'),
 		'labels' => array (
 		  'name' => _x('News','post type plural','govintranet'),
 		  'singular_name' => _x('News','post type singular','govintranet'),
@@ -1512,7 +1512,7 @@ if ( get_option( 'options_module_casestudies' ) ) {
 		'menu_position' => '36',
 		'menu_icon' => 'dashicons-chart-bar',
 		'supports' => array('title','editor','excerpt','comments','revisions','thumbnail','author','page-attributes'),
-		'taxonomies' => array('post_tag'),
+		'taxonomies' => array('post_tag','geographicalfootprint'),
 		'labels' => array (
 		  'name' => _x('Case Studies','noun','govintranet'),
 		  'singular_name' => _x('Case Study','noun','govintranet'),
@@ -1552,7 +1552,7 @@ if ( get_option( 'options_module_tasks' ) ) {
 		'menu_position' => '38',
 		'menu_icon' => 'dashicons-hammer',
 		'supports' => array('title','editor','excerpt','comments','revisions','author','page-attributes'),
-		'taxonomies' => array('category','post_tag'),
+		'taxonomies' => array('category','post_tag','geographicalfootprint'),
 		'labels' => array (
 		  'name' => __('Tasks','govintranet'),
 		  'singular_name' => __('Task','govintranet'),
@@ -11642,3 +11642,68 @@ add_filter( 'comment_form_defaults', function( $fields ) {
     }
     return $fields;
 });
+
+//BESPOKE LEARNING FROM LOCAL FUNCTIONS UNDER HERE
+
+/*
+* Creating a function to create our CPT
+*/
+
+function custom_post_type() {
+
+// Set UI labels for Custom Post Type
+    $labels = array(
+        'name'                => _x( 'Organisations', 'Post Type General Name', 'govintranet' ),
+        'singular_name'       => _x( 'Organisation', 'Post Type Singular Name', 'govintranet' ),
+        'menu_name'           => __( 'Organisation', 'govintranet' ),
+        'parent_item_colon'   => __( 'Parent Organisation', 'govintranet' ),
+        'all_items'           => __( 'All Organisations', 'govintranet' ),
+        'view_item'           => __( 'View Organisation', 'govintranet' ),
+        'add_new_item'        => __( 'Add New Organisation', 'govintranet' ),
+        'add_new'             => __( 'Add New', 'govintranet' ),
+        'edit_item'           => __( 'Edit Organisation', 'govintranet' ),
+        'update_item'         => __( 'Update Organisation', 'govintranet' ),
+        'search_items'        => __( 'Search Organisation', 'govintranet' ),
+        'not_found'           => __( 'Not Found', 'govintranet' ),
+        'not_found_in_trash'  => __( 'Not found in Trash', 'govintranet' ),
+    );
+
+// Set other options for Custom Post Type
+
+    $args = array(
+        'label'               => __( 'organisations', 'govintranet' ),
+        'description'         => __( 'Organisations directory', 'govintranet' ),
+        'labels'              => $labels,
+        // Features this CPT supports in Post Editor
+        'supports'            => array( 'title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'revisions', 'custom-fields', ),
+        // You can associate this CPT with a taxonomy or custom taxonomy.
+        'taxonomies'          => array( 'organisationtype', 'geographicalfootprint' ),
+        /* A hierarchical CPT is like Pages and can have
+        * Parent and child items. A non-hierarchical CPT
+        * is like Posts.
+        */
+        'hierarchical'        => false,
+        'public'              => true,
+        'show_ui'             => true,
+        'show_in_menu'        => true,
+        'show_in_nav_menus'   => true,
+        'show_in_admin_bar'   => true,
+        'menu_position'       => 5,
+        'can_export'          => true,
+        'has_archive'         => true,
+        'exclude_from_search' => false,
+        'publicly_queryable'  => true,
+        'capability_type'     => 'page',
+    );
+
+    // Registering your Custom Post Type
+    register_post_type( 'organisations', $args );
+
+}
+
+/* Hook into the 'init' action so that the function
+* Containing our post type registration is not
+* unnecessarily executed.
+*/
+
+add_action( 'init', 'custom_post_type', 0 );
