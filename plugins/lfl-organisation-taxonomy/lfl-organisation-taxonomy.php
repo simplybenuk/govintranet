@@ -17,7 +17,7 @@ function create_organisational_type_nonhierarchical_taxonomy() {
     'name' => _x( 'Organisation type', 'taxonomy general name' ),
     'singular_name' => _x( 'Organisation type', 'taxonomy singular name' ),
     'search_items' =>  __( 'Search Organisation types' ),
-    'popular_items' => __( 'Popular Organisation types' ),
+    'popular_items' => null,
     'all_items' => __( 'All Organisation types' ),
     'parent_item' => null,
     'parent_item_colon' => null,

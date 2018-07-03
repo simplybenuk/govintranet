@@ -17,7 +17,7 @@ function create_geographical_nonhierarchical_taxonomy() {
     'name' => _x( 'Geographical footprint', 'taxonomy general name' ),
     'singular_name' => _x( 'Geographical footprint', 'taxonomy singular name' ),
     'search_items' =>  __( 'Search Geographical footprints' ),
-    'popular_items' => __( 'Popular Geographical footprints' ),
+    'popular_items' => null,
     'all_items' => __( 'All Geographical footprint' ),
     'parent_item' => null,
     'parent_item_colon' => null,

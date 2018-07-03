@@ -1454,3 +1454,14 @@ a img.aligncenter {
     content: none !important;
   }
 }
+
+/*CUSTOM LEARNING FROM LOCAL CSS*/
+
+.geobadge a {
+	color: white;
+	text-decoration: none;
+}
+.geobadge a:visited {
+	color: white;
+	text-decoration: none;
+}
