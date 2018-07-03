@@ -20,12 +20,22 @@ get_header(); ?>
 		<div class="col-lg-8 col-md-8 white">
 
 			<h1>Organisations</h1>
-			<?php if (have_posts()) : ?>
-			<?php while (have_posts()) : the_post(); ?>
+			<?php
+			$args = array(
+		  	'post_type'   => 'organisations',
+		  	'post_status' => 'publish',
+				'orderby' => 'title',
+				'order'   => 'ASC',
+				'nopaging' => true,
+				);
+				$organisations = new WP_Query( $args );
+			if( $organisations->have_posts() ) :
+			?>
+			<?php while ($organisations->have_posts()) : $organisations->the_post(); ?>
 				<h3 id="post-<?php the_ID(); ?>">
 					<a role="button" data-toggle="collapse" href="#collapse<?php the_ID(); ?>" aria-expanded="false" aria-controls="collapse<?php the_ID(); ?>">
 					  <?php the_title(); ?>
-					</a>
+					</a><span class="badge"><?php echo get_the_term_list( $post->ID, 'geographicalfootprint', '<span class="geobadge">','','</span>' ) ?></span>
 				</h3>
 				<a href="<?php the_field('organisation-url'); ?>"><?php the_field('organisation-url'); ?></a>
 				<p><?php echo get_the_term_list( $post->ID, 'organisationtype', '<small>',' | ','</small>' ) ?></p>
