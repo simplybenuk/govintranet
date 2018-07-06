@@ -20,18 +20,8 @@ get_header(); ?>
 		<div class="col-lg-8 col-md-8 white">
 
 			<h1>Organisations</h1>
-			<?php
-			$args = array(
-		  	'post_type'   => 'organisations',
-		  	'post_status' => 'publish',
-				'orderby' => 'title',
-				'order'   => 'ASC',
-				'nopaging' => true,
-				);
-				$organisations = new WP_Query( $args );
-			if( $organisations->have_posts() ) :
-			?>
-			<?php while ($organisations->have_posts()) : $organisations->the_post(); ?>
+			<?php if (have_posts()) : ?>
+			<?php while (have_posts()) : the_post(); ?>
 				<h3 id="post-<?php the_ID(); ?>">
 					<a role="button" data-toggle="collapse" href="#collapse<?php the_ID(); ?>" aria-expanded="false" aria-controls="collapse<?php the_ID(); ?>">
 					  <?php the_title(); ?>
