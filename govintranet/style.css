@@ -3,8 +3,8 @@ Theme Name: GovIntranet [Learning from Local flavour]
 Theme URI: https://help.govintra.net
 Description: Intranet theme inspired by GOV.UK. Custom post types: news, updates, blog, events, tasks & guides, casestudies, vacancies, A to Z, jargon-buster, staff directory, teams. Theme widgets: About this page, A to Z, Events listing, Feature blogposts, Feature news, Feedback, How do I?, Most active, Hot topics, Most recent, Search autocomplete, Vacancy listing, Tube status, Profile nudge, Intraverts. Requires Advanced Custom Fields Pro (Premium plugin).
 Version: 4.39.4.5
-Author: Luke Oatham [Updated by Benjamin Heap
-Author URI: https://intranetdiary.co.uk
+Author: Luke Oatham [Mod by Benjamin Heap]
+Author URI: https://intranetdiary.co.uk [http://simplyben.co.uk]
 Tags: bootstrap,  intranet,  gov.uk, responsive
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -1464,4 +1464,21 @@ a img.aligncenter {
 .geobadge a:visited {
 	color: white;
 	text-decoration: none;
+}
+
+/*BETA banner*/
+.phase-banner {
+	background-color: white;
+  color: black;
+  padding: 10px 0 0 0;
+  border-bottom: 1px solid;
+}
+
+.phase-tag {
+	padding: 5px 10px;
+  color: #fff;
+  background-color: #005ea5;
+  letter-spacing: 1px;
+  text-decoration: none;
+  text-transform: uppercase
 }

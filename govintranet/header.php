@@ -32,7 +32,7 @@ header('X-Frame-Options: SAMEORIGIN');
 		?>
 	</title>
 	<!--Google Analytics-->
-	<?php	
+	<?php
 	// write script for google analytics (only do on homepage if homepage tracking is set or on search page)
 	$gistrackhome = get_option('options_track_homepage');
 	$gisgtc = get_option('options_google_tracking_code');
@@ -48,7 +48,7 @@ header('X-Frame-Options: SAMEORIGIN');
 			<meta http-equiv="refresh" content="<?php echo intval(get_option('options_homepage_auto_refresh'))*60;?>">
 			<?php
 		}
-	} 
+	}
 	if ( get_option( "options_gi_use_bootstrap_cdn", 0 ) ){
 		echo '<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">';
 	} else {
@@ -68,7 +68,7 @@ header('X-Frame-Options: SAMEORIGIN');
 	<?php
 	$headcode = get_option('options_header_code');
 	if ( $headcode ) echo $headcode;
-	
+
 	/* We add some JavaScript to pages with the comment form
 	 * to support sites with threaded comments (when in use).
 	 */
@@ -84,13 +84,13 @@ header('X-Frame-Options: SAMEORIGIN');
 	?>
 </head>
 
-<?php 
+<?php
 $tzone = get_option('timezone_string');
 if ( $tzone ) date_default_timezone_set($tzone);
 ?>
 
 <body <?php body_class(); ?>>
-	<div class="sr-only" id="access">	
+	<div class="sr-only" id="access">
 	  <?php /*  Allow screen readers / text browsers to skip the navigation menu and get right to the good stuff */ ?>
 		<a href="#content" class='hiddentext' accesskey='s' title="<?php esc_attr_e( 'Skip to content', 'govintranet' ); ?>"><?php _e( 'Skip to content', 'govintranet' ); ?></a>
 		<a href="#primarynav" class='hiddentext' accesskey='2' title="<?php esc_attr_e( 'Main menu', 'govintranet' ); ?>"><?php _e( 'Skip to main menu', 'govintranet' ); ?></a>
@@ -106,18 +106,18 @@ if ( $tzone ) date_default_timezone_set($tzone);
 			      <span class="icon-bar"></span>
 			      <span class="icon-bar"></span>
 			    </button>
-			    <p><a class='navbar-brand visible-xs pull-left' href="<?php echo home_url( '/' ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>"  rel="home"><i class="glyphicon glyphicon-home"></i> <?php _e('Home' , 'govintranet'); ?></a></p>
+			    <p><a class='navbar-brand visible-xs pull-left' href="<?php echo home_url( '/' ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>"  rel="home"><i class="glyphicon glyphicon-home"></i> <?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?></a></p>
 		  	</div>
 			<!-- Collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse navbar-ex1-collapse">				
-				<div class="row" id="masthead">	
+			<div class="collapse navbar-collapse navbar-ex1-collapse">
+				<div class="row" id="masthead">
 					<div class="container">
 						<a class="sr-only" href="#content"><?php _e('Skip to content' , 'govintranet');?></a>
-						<div class="row">							
+						<div class="row">
 						<!--logo and name-->
 							<div class="col-lg-8 col-md-7 col-sm-6 hidden-xs" id="crownlogo">
 								<div id="crownlink">
-									<?php 
+									<?php
 										if ( function_exists( 'the_custom_logo' ) ) {
 											the_custom_logo();
 											}
@@ -125,7 +125,7 @@ if ( $tzone ) date_default_timezone_set($tzone);
 									<p class="site-title<?php if ( !display_header_text() ) echo '  hidden'; ?>"><a href="<?php echo home_url( '/' ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>"  rel="home" accesskey="1"><?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?></a></p>
 								</div>
 							</div>
-						
+
 						<?php  $jumbo_searchbox = get_option("options_search_jumbo_searchbox", false);	?>
 
 						<?php if ( $jumbo_searchbox != 1 || ( !is_home() && !is_front_page() ) ) : ?>
@@ -136,7 +136,7 @@ if ( $tzone ) date_default_timezone_set($tzone);
 									<?php get_search_form(true); ?>
 								</div>
 							</div>
-							
+
 						<?php endif; ?>
 
 						</div>
@@ -146,10 +146,10 @@ if ( $tzone ) date_default_timezone_set($tzone);
 								<?php
 								if ( has_nav_menu( 'secondary' ) ) :?>
 									<div id='utilitybar'>
-										<?php										
-										wp_nav_menu( array( 
-										'container_class' => 'utilities', 
-										'theme_location' => 'secondary' , 
+										<?php
+										wp_nav_menu( array(
+										'container_class' => 'utilities',
+										'theme_location' => 'secondary' ,
 										'depth' 		=> 2,
 										'walker' => new wp_bootstrap_navwalker(),
 										) ); ?>
@@ -158,7 +158,7 @@ if ( $tzone ) date_default_timezone_set($tzone);
 								else:
 								?>
 								<?php if ( is_active_sidebar( 'utility-widget-area' ) ) : ?>
-										<div id='utilitybar'>	
+										<div id='utilitybar'>
 											<ul class="menu">
 											<?php dynamic_sidebar( 'utility-widget-area' ); ?>
 											</ul>
@@ -168,14 +168,14 @@ if ( $tzone ) date_default_timezone_set($tzone);
 								endif;
 								?>
 							</div>
-							<div  id="mainnav" class="pull-left">		
+							<div  id="mainnav" class="pull-left">
 
 								<div id="primarynav" role="navigation">
 										<?php /* Our navigation menu.  If one isn't filled out, wp_nav_menu falls back to wp_page_menu.  The menu assiged to the primary position is the one used.  If none is assigned, the menu with the lowest ID is used.  */ ?>
-										<?php 
-								wp_nav_menu( array( 
-									'container_class' => 'menu-header', 
-									'theme_location' => 'primary' , 
+										<?php
+								wp_nav_menu( array(
+									'container_class' => 'menu-header',
+									'theme_location' => 'primary' ,
 									'depth' 		=> 2,
 									'walker' => new wp_bootstrap_navwalker(),
 									) ); ?>
@@ -185,9 +185,16 @@ if ( $tzone ) date_default_timezone_set($tzone);
 					</div>
 				</div>
 			</div><!-- /.navbar-collapse -->
-		</nav>						
-	</div>				
-	<div id="content" class="container">			
+		</nav>
+	</div>
+	<div class="phase-banner container">
+<p>
+	<strong class="phase-tag">BETA</strong>
+	<span>This is a new service – your <a href="<?php echo get_site_url(); ?>/contact-us/">feedback</a> will help us to improve it.</span>
+</p>
+</div>
+
+	<div id="content" class="container">
 		<?php if ( $jumbo_searchbox == 1 && ( is_home() || is_front_page() ) ) : ?>
 		<!--search box-->
 			<div class="altsearch-container">
